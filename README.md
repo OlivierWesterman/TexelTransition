@@ -7,7 +7,7 @@ To host the website locally, follow these steps:
 1. Install Visual Studio Code (see this guide: [Visual Studio Code](https://code.visualstudio.com/docs/setup/setup-overview) )
 2. Install Git (see this guide: [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git))
 3. Open a Powershell as admin in the folder you wish to house the website files locally on your pc (SHIFT + Right-click in Explorer an click Open Powershell here.)
-4. In the terminal type or copy paste this code: ```git clone``` and hit enter
+4. In the terminal type or copy paste this code: ```git clone https://github.com/OlivierWesterman/TexelTransition.git``` and hit enter
 5. The repo folder should now exist locally, right-click it and "open with visual studio code"
 6. In the top bar, click the ... to navigate to Terminal and click "New Terminal"
 7. Install Python (see this guide: [Python in VSCode](https://code.visualstudio.com/docs/python/python-tutorial))
