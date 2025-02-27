@@ -11,6 +11,10 @@ To host the website locally, follow these steps:
 5. The repo folder should now exist locally, right-click it and "open with visual studio code"
 6. In the top bar, click the ... to navigate to Terminal and click "New Terminal"
 7. Install Python (see this guide: [Python in VSCode](https://code.visualstudio.com/docs/python/python-tutorial))
-8. A cursor will appear in a new window where you just enter this code ```pip install matplotlib```, ```pip install numpy```, ```pip install pandas```, ```pip install streamlit```,
-9. Finally, just enter this code in that same terminal ```python -m streamlit run app.py```, and the website will open.
-10. When you are done you need to shut down the website by going back to the terminal and pressing CTRL+C or hitting the trashcan icon above to delete the terminal.
+8. A cursor will appear in a new window where you just enter these lines of code, one by one:
+-  ```pip install matplotlib```,
+-  ```pip install numpy```,
+-  ```pip install pandas```,
+-  ```pip install streamlit```
+10. Finally, just enter this code in that same terminal ```python -m streamlit run app.py```, and the website will open.
+11. When you are done you need to shut down the website by going back to the terminal and pressing CTRL+C or hitting the trashcan icon above to delete the terminal.
