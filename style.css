@@ -1,16 +1,100 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 body {
   font-family: sans-serif;
   margin: 0;
-  padding: 0;
+  padding-top: 6rem;
   background: #86ceea;
   color: black;
 }
 
 header {
-  background: #557e3c;
-  color: white;
-  padding: 1rem;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.25rem 1rem;
+  background-color: #557e3c;
+  height: 6rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+header .title {
+  font-size: 1.2rem;
+  margin: 0;
+  color: #fff;
+}
+header #energyStatus {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+header #energyStatus span {
+  font-size: 0.85rem;
+  color: #fff;
+  font-weight: normal;
+}
+header #energyStatus span strong {
+  font-weight: bold;
+}
+header #energyBarContainer {
+  height: 16px;
+  margin-left: 1rem;
+}
+header #energyBarLabel {
+  font-size: 0.75rem;
+}
+
+#energyStatus {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+  color: #fff;
+}
+
+#energyStatus span {
+  font-weight: bold;
+}
+
+#energyBarContainer {
+  position: relative;
+  width: 80%;
+  height: 24px;
+  background-color: #444;
+  border-radius: 12px;
+  margin: 1rem auto;
+  overflow: hidden;
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.6);
+}
+
+#energyBarFill {
+  height: 100%;
+  background: linear-gradient(to right, #4caf50, #8bc34a);
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+#energyBarLabel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #fff;
+  pointer-events: none;
 }
 
 .layout {
