@@ -118,7 +118,8 @@ $(document).ready(() => {
 
 function showInfo(type) {
   if (currentHotspot === type) {
-    $('.info-box').hide();
+    // Hide the info panel and reset state if clicking the same hotspot
+    $('.info-panel').removeClass('show');
     currentHotspot = null;
     return;
   }
@@ -126,31 +127,21 @@ function showInfo(type) {
   currentHotspot = type;
   const data = hotspotData[type];
 
-  const $image = $('#texelMap');
-  const imageOffset = $image.offset();
-  const imageWidth = $image.width();
-  const imageHeight = $image.height();
+  // Update the right panel with the hotspot information
+  $('#infoContent').html(`
+    <h3>${type}</h3>
+    <p>${data.description}</p>
+    <img src="${data.image}" alt="${type}" style="max-width: 100%; height: auto;">
+    <h4>Energy Split:</h4>
+    <ul>
+      <li>Wind: ${data.energySplit.wind}%</li>
+      <li>Solar: ${data.energySplit.solar}%</li>
+      <li>Biogas: ${data.energySplit.biogas}%</li>
+    </ul>
+  `);
 
-  const topPercent = parseFloat(data.position.top) / 100;
-  const leftPercent = parseFloat(data.position.left) / 100;
-
-  const top = imageOffset.top + imageHeight * topPercent;
-  const left = imageOffset.left + imageWidth * leftPercent;
-
-  $('.info-box').html(`
-    <div style="max-width: 220px;">
-      <img src="${data.image}" alt="${type}" style="width: 100%; border-radius: 8px; margin-bottom: 8px;">
-      <p>${data.description}</p>
-      <div id="pieChart" style="width: 100%; height: 200px;"></div>
-    </div>
-  `).css({
-    position: 'absolute',
-    top: `${top}px`,
-    left: `${left}px`,
-    display: 'block'
-  });
-
-  updatePieChart();
+  // Show the right panel
+  $('.info-panel').addClass('show');
 }
 
 function positionHotspots() {

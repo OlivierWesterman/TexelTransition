@@ -205,3 +205,68 @@ input[type="number"] {
   font-size: 0.9rem;
   z-index: 10;
 }
+
+.layout {
+  display: flex;
+  gap: $spacing;
+  padding: $spacing;
+}
+
+.input-panel {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing;
+  width: 25%; // Fixed width for the left panel
+}
+
+.chart-panel {
+  flex: 1;
+}
+
+.map-panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%; // Main content area for the map
+  position: relative;
+}
+
+#texelMap {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.hotspot {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(255, 0, 0, 0.4);
+  border: 2px solid red;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.hotspot:hover {
+  transform: scale(1.1);
+}
+
+.info-panel {
+  width: 25%; // Fixed width for the right panel
+  display: none; // Hidden by default
+  padding: $spacing;
+  background-color: #fff;
+  border-left: 1px solid #ccc;
+  box-shadow: 2px 0px 5px rgba(0,0,0,0.1);
+}
+
+.info-panel.show {
+  display: block; // Show when active
+}
+
+.info-panel #infoContent {
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 0.5rem;
+}

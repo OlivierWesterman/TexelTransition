@@ -28,6 +28,7 @@
   
 
   <main class="layout">
+    <!-- Left Panel -->
     <section class="input-panel">
       <label>Solar (kWh or TJ): <input type="number" id="solarInput" value="40"></label>
       <label>Biogas (kWh or TJ): <input type="number" id="biogasInput" value="30"></label>
@@ -36,21 +37,22 @@
         <div id="sankeyChart"></div>
       </section>
     </section>
-
-
+  
+    <!-- Middle Panel -->
     <section class="map-panel">
-      <div id="interactiveMap"></div>
-      <img id="texelMap" src="./resources/Images/Texel_0.png" alt="Texel Map" style="max-width: 100%; margin-top: 1rem;">
-
-      <!--Clickable Regions-->
-      <div class="hotspot" id="Oosterend" onclick="showInfo('Oosterend')"></div>
-      <div class="hotspot" id="Den_Burg" onclick="showInfo('Den_Burg')"></div>
-      <div class="hotspot" id="Oudeschild" onclick="showInfo('Oudeschild')"></div>
-
-      <div class="info-box"></div>
+      <div id="interactiveMap">
+        <img id="texelMap" src="./resources/Images/Texel_0.png" alt="Texel Map" />
+        <div class="hotspot" id="Oosterend" onclick="showInfo('Oosterend')"></div>
+        <div class="hotspot" id="Den_Burg" onclick="showInfo('Den_Burg')"></div>
+        <div class="hotspot" id="Oudeschild" onclick="showInfo('Oudeschild')"></div>
+      </div>
     </section>
-    
-  </main>
+  
+    <!-- Right Panel (hidden by default) -->
+    <section class="info-panel">
+      <div id="infoContent"></div>
+    </section>
+  </main>  
 
   <script src="script.js"></script>
 </body>
