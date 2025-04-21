@@ -1,0 +1,112 @@
+// Variables
+$main-color: #86ceea;
+$accent-color: #557e3c;
+$spacing: 1rem;
+
+// Base styles
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  background: $main-color;
+  color: black;
+}
+
+header {
+  background: $accent-color;
+  color: white;
+  padding: $spacing;
+  text-align: center;
+}
+
+// Layout container
+.layout {
+  display: flex;
+  flex-direction: row;
+  gap: $spacing;
+  padding: $spacing;
+}
+
+// Input panel
+.input-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing;
+  justify-content: space-around;
+
+  label {
+    flex: 1 1 200px;
+    display: flex;
+    flex-direction: column;
+    font-weight: bold;
+  }
+}
+
+// Input styles
+input[type="number"] {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+// Chart area
+.chart-panel {
+  width: 50%;
+}
+
+// Map area
+.map-panel {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+#texelMap {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.hotspot {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(255, 0, 0, 0.4);
+  border: 2px solid red;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+  &#Oosterend {
+    top: 48%;
+    left: 65.2%;
+  }
+  
+  &#Den_Burg {
+    top: 63%;
+    left: 46.2%;
+  }
+  
+  &#Oudeschild {
+    top: 69%;
+    left: 58%;
+  }
+}
+
+.info-box {
+  position: absolute;
+  display: none;
+  border: 1px solid #ccc;
+  background: #fffce0;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  max-width: 250px;
+  font-size: 0.9rem;
+  z-index: 10;
+}
