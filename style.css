@@ -32,13 +32,16 @@ header .title {
 header #energyStatus {
   display: flex;
   justify-content: space-around;
+  margin-top: 1rem;
   flex-wrap: wrap;
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
   gap: 0.5rem;
+  color: #fff;
 }
 header #energyStatus span {
   font-size: 0.85rem;
   color: #fff;
-  font-weight: normal;
+  font-weight: bold;
 }
 header #energyStatus span strong {
   font-weight: bold;
@@ -46,27 +49,8 @@ header #energyStatus span strong {
 header #energyBarContainer {
   height: 16px;
   margin-left: 1rem;
-}
-header #energyBarLabel {
-  font-size: 0.75rem;
-}
-
-#energyStatus {
-  display: flex;
-  justify-content: space-around;
-  margin-top: 1rem;
-  flex-wrap: wrap;
-  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
-  color: #fff;
-}
-
-#energyStatus span {
-  font-weight: bold;
-}
-
-#energyBarContainer {
   position: relative;
-  width: 80%;
+  width: 50%;
   height: 24px;
   background-color: #444;
   border-radius: 12px;
@@ -74,15 +58,8 @@ header #energyBarLabel {
   overflow: hidden;
   box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.6);
 }
-
-#energyBarFill {
-  height: 100%;
-  background: linear-gradient(to right, #4caf50, #8bc34a);
-  width: 0%;
-  transition: width 0.3s ease;
-}
-
-#energyBarLabel {
+header #energyBarLabel {
+  font-size: 0.75rem;
   position: absolute;
   top: 0;
   left: 0;
@@ -96,104 +73,41 @@ header #energyBarLabel {
   color: #fff;
   pointer-events: none;
 }
+header #energyBarFill {
+  height: 100%;
+  background: linear-gradient(to right, #4caf50, #8bc34a);
+  width: 0%;
+  transition: width 0.3s ease;
+}
 
 .layout {
   display: flex;
   flex-direction: row;
   gap: 1rem;
   padding: 1rem;
+  min-height: calc(100vh - 6rem);
 }
 
 .input-panel {
   display: flex;
   flex-wrap: wrap;
+  flex-direction: column;
   gap: 1rem;
-  justify-content: space-around;
+  width: 30%;
 }
 .input-panel label {
-  flex: 1 1 200px;
+  flex: 1 1 1;
   display: flex;
   flex-direction: column;
   font-weight: bold;
 }
-
-input[type=number] {
+.input-panel input[type=number] {
   margin-top: 0.5rem;
   padding: 0.5rem;
   font-size: 1rem;
 }
-
-.chart-panel {
-  width: 50%;
-}
-
-.map-panel {
+.input-panel .chart-panel {
   width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-}
-
-#texelMap {
-  max-width: 100%;
-  height: auto;
-  display: block;
-}
-
-.hotspot {
-  position: absolute;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: rgba(255, 0, 0, 0.4);
-  border: 2px solid red;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-.hotspot:hover {
-  transform: scale(1.1);
-}
-.hotspot#Oosterend {
-  top: 48%;
-  left: 65.2%;
-}
-.hotspot#Den_Burg {
-  top: 63%;
-  left: 46.2%;
-}
-.hotspot#Oudeschild {
-  top: 69%;
-  left: 58%;
-}
-
-.info-box {
-  position: absolute;
-  display: none;
-  border: 1px solid #ccc;
-  background: #fffce0;
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  max-width: 250px;
-  font-size: 0.9rem;
-  z-index: 10;
-}
-
-.layout {
-  display: flex;
-  gap: 1rem;
-  padding: 1rem;
-}
-
-.input-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  width: 25%;
-}
-
-.chart-panel {
   flex: 1;
 }
 
@@ -204,14 +118,13 @@ input[type=number] {
   width: 50%;
   position: relative;
 }
-
-#texelMap {
-  width: 100%;
+.map-panel #interactiveMap {
+  max-width: 100%;
   height: auto;
   display: block;
+  position: relative;
 }
-
-.hotspot {
+.map-panel .hotspot {
   position: absolute;
   width: 40px;
   height: 40px;
@@ -221,8 +134,7 @@ input[type=number] {
   cursor: pointer;
   transition: transform 0.2s ease;
 }
-
-.hotspot:hover {
+.map-panel .hotspot:hover {
   transform: scale(1.1);
 }
 
@@ -232,17 +144,28 @@ input[type=number] {
   padding: 1rem;
   background-color: #fff;
   border-left: 1px solid #ccc;
-  box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.1);
 }
-
 .info-panel.show {
   display: block;
 }
-
 .info-panel #infoContent {
   padding: 1rem;
   background-color: #f9f9f9;
   border-radius: 0.5rem;
+}
+.info-panel #infoContent img {
+  max-width: 100%;
+  height: auto;
+  margin: 1rem 0;
+  border-radius: 0.25rem;
+}
+.info-panel #infoContent h3 {
+  margin-top: 0;
+  color: #557e3c;
+}
+.info-panel #infoContent ul {
+  padding-left: 1.5rem;
 }
 
 /*# sourceMappingURL=style.css.map */

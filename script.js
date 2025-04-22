@@ -97,24 +97,29 @@ function updatePieChart() {
   }, { staticPlot: true });
 }
 
-$(document).ready(() => {
-  function updateChartAndImage() {
-    const solar = parseFloat($('#solarInput').val()) || 0;
-    const gas = parseFloat($('#biogasInput').val()) || 0;
-    const wind = parseFloat($('#windInput').val()) || 0;
+function updateChartAndImage() {
+  const solar = parseFloat($('#solarInput').val()) || 0;
+  const biogas = parseFloat($('#biogasInput').val()) || 0;
+  const wind = parseFloat($('#windInput').val()) || 0;
 
-    drawSankey(solar, gas, wind);
+  const totalGenerated = solar + biogas + wind;
+  const totalDemand = 200; // You can make this dynamic later if needed
+  const percentage = Math.min((totalGenerated / totalDemand) * 100, 100); // cap at 100%
 
-    const imageName = getTexelImageName(solar, gas, wind);
-    $('#texelMap').attr('src', imageName);
+  // Update energy status
+  $('#generatedEnergy').text(totalGenerated.toFixed(1));
+  $('#demandEnergy').text(totalDemand);
+  $('#energyDifference').text((totalGenerated - totalDemand).toFixed(1));
 
-    updatePieChart(); // <-- dynamically update if a hotspot is open
-  }
+  $('#energyBarFill').css('width', `${percentage}%`);
+  $('#energyLabelText').text(`${totalGenerated.toFixed(1)} / ${totalDemand} kWh`);
 
-  updateChartAndImage();
+  drawSankey(solar, biogas, wind);
+  const imageName = getTexelImageName(solar, biogas, wind);
+  $('#texelMap').attr('src', imageName);
 
-  $('#solarInput, #biogasInput, #windInput').on('input', updateChartAndImage);
-});
+  updatePieChart();
+}
 
 function showInfo(type) {
   if (currentHotspot === type) {
@@ -129,7 +134,7 @@ function showInfo(type) {
 
   // Update the right panel with the hotspot information
   $('#infoContent').html(`
-    <h3>${type}</h3>
+    <h3>${type.replace('_', ' ')}</h3>
     <p>${data.description}</p>
     <img src="${data.image}" alt="${type}" style="max-width: 100%; height: auto;">
     <h4>Energy Split:</h4>
@@ -138,10 +143,14 @@ function showInfo(type) {
       <li>Solar: ${data.energySplit.solar}%</li>
       <li>Biogas: ${data.energySplit.biogas}%</li>
     </ul>
+    <div id="pieChart" style="width: 100%; height: 250px;"></div>
   `);
 
   // Show the right panel
   $('.info-panel').addClass('show');
+  
+  // Update the pie chart
+  updatePieChart();
 }
 
 function positionHotspots() {
@@ -150,35 +159,24 @@ function positionHotspots() {
   const hotspots = document.querySelectorAll('.hotspot');
 
   hotspots.forEach(hotspot => {
-    const xPercent = parseFloat(hotspot.dataset.x);
-    const yPercent = parseFloat(hotspot.dataset.y);
-
-    hotspot.style.left = `${(xPercent / 100) * rect.width + rect.left}px`;
-    hotspot.style.top = `${(yPercent / 100) * rect.height + rect.top}px`;
+    const type = hotspot.id;
+    const data = hotspotData[type];
+    
+    if (data && data.position) {
+      const top = data.position.top;
+      const left = data.position.left;
+      
+      hotspot.style.top = top;
+      hotspot.style.left = left;
+    }
   });
 }
 
-window.addEventListener('load', positionHotspots);
-window.addEventListener('resize', positionHotspots);
-
-function updateChartAndImage() {
-  const solar = parseFloat($('#solarInput').val()) || 0;
-  const biogas = parseFloat($('#biogasInput').val()) || 0;
-  const wind = parseFloat($('#windInput').val()) || 0;
-
-  const totalGenerated = solar + biogas + wind;
-  const totalDemand = 200; // You can make this dynamic later if needed
-  const percentage = Math.min((totalGenerated / totalDemand) * 100, 100); // cap at 100%
-
-  $('#energyBarFill').css('width', `${percentage}%`);
-  $('#energyLabelText').text(`${totalGenerated.toFixed(1)} / ${totalDemand} kWh`);
-
-  drawSankey(solar, biogas, wind);
-  const imageName = getTexelImageName(solar, biogas, wind);
-  $('#texelMap').attr('src', imageName);
-
-  updatePieChart();
-}
-
-updateChartAndImage();
-$('#solarInput, #biogasInput, #windInput').on('input change', updateChartAndImage);
+$(document).ready(() => {
+  updateChartAndImage();
+  positionHotspots();
+  
+  // Event listeners
+  $('#solarInput, #biogasInput, #windInput').on('input change', updateChartAndImage);
+  $(window).on('resize', positionHotspots);
+});
