@@ -4,19 +4,19 @@ const hotspotData = {
   Oosterend: {
     description: "Oosterend has a lot of lorem ipsum potential and lorem ipsum",
     image: "./resources/images/Oosterend.jpg",
-    position: { top: '43%', left: '65%' },
+    position: { top: '50%', left: '72.8%' },
     energySplit: { wind: 50, solar: 18, biogas: 32 }
   },
   Den_Burg: {
     description: "The most populous area of the island and hub of commerce.",
     image: "./resources/images/DenBurg.jpg",
-    position: { top: '63%', left: '18%' },
+    position: { top: '65%', left: '46%' },
     energySplit: { wind: 32, solar: 24, biogas: 44 }
   },
   Oudeschild: {
     description: "A fishing village, relying on fossil fuels to power their boats.",
     image: "./resources/images/Oudeschild.jpg",
-    position: { top: '73%', left: '61%' },
+    position: { top: '73%', left: '65%' },
     energySplit: { wind: 18, solar: 48, biogas: 24 }
   }
 };
@@ -89,12 +89,12 @@ function updatePieChart() {
     marker: {
       colors: ['#f39c12', '#27ae60', '#3498db']
     },
-    textinfo: 'label+TJ',
-    hoverinfo: 'label+value+TJ'
+    textinfo: 'label+percent',
+    hoverinfo: 'label+value+percent'
   }], {
     margin: { t: 0, b: 0, l: 0, r: 0 },
     showlegend: false
-  }, { staticPlot: true });
+  });
 }
 
 function updateChartAndImage() {
@@ -136,47 +136,104 @@ function showInfo(type) {
   $('#infoContent').html(`
     <h3>${type.replace('_', ' ')}</h3>
     <p>${data.description}</p>
-    <img src="${data.image}" alt="${type}" style="max-width: 100%; height: auto;">
+    <img src="${data.image}" alt="${type}">
     <h4>Energy Split:</h4>
     <ul>
       <li>Wind: ${data.energySplit.wind}%</li>
       <li>Solar: ${data.energySplit.solar}%</li>
       <li>Biogas: ${data.energySplit.biogas}%</li>
     </ul>
-    <div id="pieChart" style="width: 100%; height: 250px;"></div>
+    <div id="pieChart"></div>
   `);
 
   // Show the right panel
   $('.info-panel').addClass('show');
   
-  // Update the pie chart
-  updatePieChart();
+  // Use setTimeout to ensure the DOM has updated before drawing the chart
+  setTimeout(() => {
+    updatePieChart();
+    // Force a window resize event to make Plotly adjust the chart
+    window.dispatchEvent(new Event('resize'));
+  }, 50);
 }
 
+// Improved function to position hotspots correctly
 function positionHotspots() {
-  const image = document.getElementById('texelMap');
-  const rect = image.getBoundingClientRect();
-  const hotspots = document.querySelectorAll('.hotspot');
-
-  hotspots.forEach(hotspot => {
-    const type = hotspot.id;
-    const data = hotspotData[type];
+  const mapContainer = $('#interactiveMap');
+  const mapImage = $('#texelMap');
+  
+  // Wait for the image to load
+  if (mapImage[0].complete) {
+    updateHotspotPositions();
+  } else {
+    mapImage.on('load', updateHotspotPositions);
+  }
+  
+  function updateHotspotPositions() {
+    // Get the dimensions of the map image
+    const mapWidth = mapImage.width();
+    const mapHeight = mapImage.height();
     
-    if (data && data.position) {
-      const top = data.position.top;
-      const left = data.position.left;
+    // For each hotspot, set its position based on the percentage values
+    Object.keys(hotspotData).forEach(hotspotId => {
+      const hotspot = $(`#${hotspotId}`);
+      const data = hotspotData[hotspotId];
       
-      hotspot.style.top = top;
-      hotspot.style.left = left;
-    }
+      if (data && data.position) {
+        // Parse percentage values
+        const topPercent = parseFloat(data.position.top) / 100;
+        const leftPercent = parseFloat(data.position.left) / 100;
+        
+        // Calculate pixel positions relative to map dimensions
+        const topPx = mapHeight * topPercent;
+        const leftPx = mapWidth * leftPercent;
+        
+        // Adjust for hotspot size (half of width/height to center it)
+        const hotspotSize = hotspot.width() / 2;
+        
+        // Apply positions
+        hotspot.css({
+          top: `${topPx - hotspotSize}px`,
+          left: `${leftPx - hotspotSize}px`
+        });
+      }
+    });
+    
+    // Make hotspots visible after positioning
+    $('.hotspot').css('opacity', 1);
+  }
+}
+
+// Function to resize hotspots based on map size
+function resizeHotspots() {
+  const mapWidth = $('#texelMap').width();
+  const baseSize = Math.max(20, mapWidth * 0.04); // 4% of map width, minimum 20px
+  
+  $('.hotspot').css({
+    width: `${baseSize}px`,
+    height: `${baseSize}px`
   });
+  
+  // Reposition after resizing
+  positionHotspots();
 }
 
 $(document).ready(() => {
+  // Initially hide hotspots until properly positioned
+  $('.hotspot').css('opacity', 0);
+  
   updateChartAndImage();
-  positionHotspots();
+  resizeHotspots(); // This will also call positionHotspots
   
   // Event listeners
   $('#solarInput, #biogasInput, #windInput').on('input change', updateChartAndImage);
-  $(window).on('resize', positionHotspots);
+  
+  // Debounce resize event for better performance
+  let resizeTimer;
+  $(window).on('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      resizeHotspots();
+    }, 250);
+  });
 });
