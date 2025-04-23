@@ -43,28 +43,47 @@ function drawSankey(solar, biogas, wind) {
   Plotly.react("sankeyChart", [data], { title: "Energy Flow" });
 }
 
-function getTexelImageName(solar, gas, wind) {
+function getTexelImageName(solar, gas, sTurb, lTurb) {
   const s = solar > 50;
   const g = gas > 50;
-  const w = wind > 50;
+  const sT = sTurb > 50;
+  const lT = lTurb > 50;
 
-  if (!s && !g && !w) return "./resources/Images/Texel_0.png";
-  if (s && g && w) return "./resources/Images/Texel_All.png";
-  if (s && !g && !w) return "./resources/Images/Texel_Solar.png";
-  if (!s && g && !w) return "./resources/Images/Texel_Gas.png";
-  if (!s && !g && w) return "./resources/Images/Texel_OffShore.png";
-  if (!s && g && w) return "./resources/Images/Texel_OffShoreGas.png";
-  if (s && g && !w) return "./resources/Images/Texel_SolarGas.png";
-  if (s && !g && w) return "./resources/Images/Texel_SolarOffShore.png";
-  if (s && g && w) return "./resources/Images/Texel_SolarOffshoreGas.png";
-  if (s && w && !g) return "./resources/Images/Texel_SolarWind.png";
-  if (!s && w && !g) return "./resources/Images/Texel_Wind.png";
-  if (!s && w && g) return "./resources/Images/Texel_WindGas.png";
-  if (s && !g && !w) return "./resources/Images/Texel_Solar.png";
-  if (!s && g && !w) return "./resources/Images/Texel_Gas.png";
-  if (!s && !g && w) return "./resources/Images/Texel_OffShore.png";
-  if (!s && g && !w) return "./resources/Images/Texel_EAZGas.png";
-  if (s && g && !w) return "./resources/Images/Texel_SolarEAZGas.png";
+  // None
+  if (!s && !g && !sT && !lT) return "./resources/Images/Texel_0.png"
+
+  //Singles
+  if (s && !g && !sT && !lT) return "./resources/Images/Texel_Solar.png"
+  if (!s && g && !sT && !lT) return "./resources/Images/Texel_Gas.png"
+  if (!s && !g && sT && !lT) return "./resources/Images/Texel_EAZ.png"
+  if (!s && !g && !sT && lT) return "./resources/Images/Texel_OffShore.png"
+
+  //Doubles
+    // Solar
+  if (s && g && !sT && !lT) return "./resources/Images/Texel_SolarGas.png"
+  if (s && !g && sT && !lT) return "./resources/Images/Texel_SolarEAZ.png"
+  if (s && !g && !sT && lT) return "./resources/Images/Texel_SolarOffShore.png"
+
+    // Gas
+  if (!s && g && sT && !lT) return "./resources/Images/Texel_EAZGas.png"
+  if (!s && g && !sT && lT) return "./resources/Images/Texel_OffShoreGas.png"
+
+    // EAZ
+  if (!s && !g && sT && lT) return "./resources/Images/Texel_Wind.png"
+
+  //Triples
+    // EAZ and Offshore
+  if (s && !g && sT && lT) return "./resources/Images/Texel_SolarWind.png"
+  if (!s && g && sT && lT) return "./resources/Images/Texel_WindGas.png"
+
+    // Solar & Gas
+  if (s && g && sT && !lT) return "./resources/Images/Texel_SolarEAZGas.png"
+  if (s && g && !sT && lT) return "./resources/Images/Texel_SolarOffShoreGas.png"
+
+  // All
+  if (s && g && sT && lT) return "./resources/Images/Texel_All.png";
+
+  // Back-up
   return "Texel_0.png";
 }
 
@@ -100,7 +119,9 @@ function updatePieChart() {
 function updateChartAndImage() {
   const solar = parseFloat($('#solarInput').val()) || 0;
   const biogas = parseFloat($('#biogasInput').val()) || 0;
-  const wind = parseFloat($('#windInput').val()) || 0;
+  const sTurb = parseFloat($('#sTurbInput').val()) || 0;
+  const lTurb = parseFloat($('#lTurbInput').val()) || 0;
+  const wind = (sTurb + lTurb)/2;
 
   const totalGenerated = solar + biogas + wind;
   const totalDemand = 200; // You can make this dynamic later if needed
@@ -115,7 +136,7 @@ function updateChartAndImage() {
   $('#energyLabelText').text(`${totalGenerated.toFixed(1)} / ${totalDemand} kWh`);
 
   drawSankey(solar, biogas, wind);
-  const imageName = getTexelImageName(solar, biogas, wind);
+  const imageName = getTexelImageName(solar, biogas, sTurb, lTurb);
   $('#texelMap').attr('src', imageName);
 
   updatePieChart();
@@ -226,7 +247,7 @@ $(document).ready(() => {
   resizeHotspots(); // This will also call positionHotspots
   
   // Event listeners
-  $('#solarInput, #biogasInput, #windInput').on('input change', updateChartAndImage);
+  $('#solarInput, #biogasInput, #sTurbInput, #lTurbInput').on('input change', updateChartAndImage);
   
   // Debounce resize event for better performance
   let resizeTimer;
