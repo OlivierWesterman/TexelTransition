@@ -135,31 +135,38 @@ function getTexelImageName(solar, gas, sTurb, lTurb) {
 
 function updatePieChart() {
   if (!currentHotspot) return;
+  
+  // Check if this is a hotspot and not an energy source
+  if (!currentHotspot.startsWith('source_')) {
+    const data = hotspotData[currentHotspot];
+    const solar = parseFloat($('#solarInput').val()) || 0;
+    const biogas = parseFloat($('#biogasInput').val()) || 0;
+    const sTurb = parseFloat($('#sTurbInput').val()) || 0;
+    const lTurb = parseFloat($('#lTurbInput').val()) || 0;
+    
+    // Combine both turbine types for the wind value
+    const wind = sTurb + lTurb;
+    
+    const values = [
+      solar * (data.energySplit.solar / 100),
+      biogas * (data.energySplit.biogas / 100),
+      wind * (data.energySplit.wind / 100)
+    ];
 
-  const data = hotspotData[currentHotspot];
-  const solar = parseFloat($('#solarInput').val()) || 0;
-  const biogas = parseFloat($('#biogasInput').val()) || 0;
-  const wind = parseFloat($('#windInput').val()) || 0;
-
-  const values = [
-    solar * (data.energySplit.solar / 100),
-    biogas * (data.energySplit.biogas / 100),
-    wind * (data.energySplit.wind / 100)
-  ];
-
-  Plotly.react('pieChart', [{
-    type: 'pie',
-    values,
-    labels: ['Solar', 'Biogas', 'Wind'],
-    marker: {
-      colors: ['#f39c12', '#27ae60', '#3498db']
-    },
-    textinfo: 'label+percent',
-    hoverinfo: 'label+value+percent'
-  }], {
-    margin: { t: 0, b: 0, l: 0, r: 0 },
-    showlegend: false
-  });
+    Plotly.react('pieChart', [{
+      type: 'pie',
+      values,
+      labels: ['Solar', 'Biogas', 'Wind'],
+      marker: {
+        colors: ['#f39c12', '#27ae60', '#3498db']
+      },
+      textinfo: 'label+percent',
+      hoverinfo: 'label+value+percent'
+    }], {
+      margin: { t: 0, b: 0, l: 0, r: 0 },
+      showlegend: false
+    });
+  }
 }
 
 function updateChartAndImage() {
