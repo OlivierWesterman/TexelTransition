@@ -13,15 +13,16 @@
 <body>
   <header>
     <h1 class="title">Texel Energy Demands</h1>
-    <div id="energyStatus">
-      <span>Total Energy Generated: <strong id="generatedEnergy">0</strong> kWh</span>
-      <span>Total Energy Demand: <strong id="demandEnergy">0</strong> kWh</span>
-      <span>Difference: <strong id="energyDifference">0</strong> kWh</span>
-    </div>
     <div id="energyBarContainer">
       <div id="energyBarFill"></div>
       <div id="energyBarLabel">
         <span id="energyLabelText">0 / 100 kWh</span>
+      </div>
+    </div>
+    <div id="budgetBarContainer">
+      <div id="budgetBarFill"></div>
+      <div id="budgetBarLabel">
+        <span id="budgetLabelText">0 / 100 €</span>
       </div>
     </div>
   </header>
@@ -30,10 +31,10 @@
   <main class="layout">
     <!-- Left Panel -->
     <section class="input-panel">
-      <label>Solar Panels(GWh or TJ): <input type="number" id="solarInput" value="40"></label>
-      <label>Biogas Digesters (GWh or TJ): <input type="number" id="biogasInput" value="30"></label>
-      <label>Small Wind Turbines (GWh or TJ): <input type="number" id="sTurbInput" value="50"></label>
-      <label>Large Wind Turbines(GWh or TJ): <input type="number" id="lTurbInput" value="50"></label>
+      <label>Solar Panels: <input type="number" id="solarInput" value="0"></label>
+      <label>Biogas Digesters: <input type="number" id="biogasInput" value="0"></label>
+      <label>Small Wind Turbines: <input type="number" id="sTurbInput" value="0"></label>
+      <label>Large Wind Turbines: <input type="number" id="lTurbInput" value="0"></label>
       <section class="chart-panel">
         <div id="sankeyChart"></div>
       </section>

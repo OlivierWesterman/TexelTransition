@@ -1,5 +1,24 @@
 let currentHotspot = null;
 
+// Cost per unit for each energy source in millions of euro
+const energyCosts = {
+  solar: .0004,     // €/unit
+  biogas: 3.5,      // €/unit
+  sTurb: .05,       // €/unit
+  lTurb: 6          // €/unit
+};
+
+// Annual yield of device or plant in GWh
+const energyGains = {
+  solar: 0.350,
+  biogas: 42,
+  sTurb: 0.03,
+  lTurb: 6.5
+};
+ 
+// Define total budget (in millions)
+const totalBudget = 300; // €
+
 const hotspotData = {
   Oosterend: {
     description: "Oosterend has a lot of lorem ipsum potential and lorem ipsum",
@@ -21,6 +40,33 @@ const hotspotData = {
   }
 };
 
+const energySourceData = {
+  Solar: {
+    title: "Solar Panel",
+    description: "One solar panel generates an amount of energy but also costs about an amount of money.",
+    image: "./resources/images/Oosterend.jpg",
+    split: {heat: 20, electric: 80}
+  },
+  Biogas: {
+    title: "Anaerobic Co-digestion Plant",
+    description: "Energy can be produced from large digestion chambers that convert biomass to methane which is used to generate power and heat.",
+    image: "./resources/images/Oosterend.jpg",
+    split: {heat: 50, electric: 50}
+  },
+  smallTurbine: {
+    title: "EAZ Wind Turbine",
+    description: "These turbines are shorter than 2m and perfect to place in a garden or on a farm.",
+    image: "./resources/images/Oosterend.jpg",
+    split: {heat: 15, electric: 85}
+  },
+  largeTurbine: {
+    title: "Offshore Windmill",
+    description: "These recognisable turbines can be built on the coast to generate energy from the oceanic breezes.",
+    image: "./resources/images/Oosterend.jpg",
+    split: {heat: 15, electric: 85}
+  }
+};
+
 function drawSankey(solar, biogas, wind) {
   const data = {
     type: "sankey",
@@ -35,7 +81,7 @@ function drawSankey(solar, biogas, wind) {
     link: {
       source: [0, 0, 1, 1, 2, 2],
       target: [3, 4, 3, 4, 3, 4],
-      value: [solar, solar * 0.2, biogas * 0.05, biogas, wind, wind * 0.6],
+      value: [solar * 0.8, solar * 0.2, biogas * 0.5, biogas * 0.5, wind * 0.85 , wind * 0.15],
       color: ["#f39c12", "#f39c12", "#27ae60", "#27ae60", "#3498db", "#3498db"]
     }
   };
@@ -44,10 +90,10 @@ function drawSankey(solar, biogas, wind) {
 }
 
 function getTexelImageName(solar, gas, sTurb, lTurb) {
-  const s = solar > 50;
-  const g = gas > 50;
-  const sT = sTurb > 50;
-  const lT = lTurb > 50;
+  const s = solar > 499;
+  const g = gas > 4;
+  const sT = sTurb > 4999;
+  const lT = lTurb > 24;
 
   // None
   if (!s && !g && !sT && !lT) return "./resources/Images/Texel_0.png"
@@ -123,17 +169,40 @@ function updateChartAndImage() {
   const lTurb = parseFloat($('#lTurbInput').val()) || 0;
   const wind = (sTurb + lTurb)/2;
 
-  const totalGenerated = solar + biogas + wind;
-  const totalDemand = 200; // You can make this dynamic later if needed
+  const solarGain = solar * energyGains.solar
+  const biogasGain = biogas * energyGains.biogas
+  const sTurbGain = sTurb * energyGains.sTurb
+  const lTurbGain = lTurb * energyGains.lTurb
+  const totalGenerated = solarGain + biogasGain + sTurbGain + lTurbGain;
+  const totalDemand = 379; // You can make this dynamic later if needed
   const percentage = Math.min((totalGenerated / totalDemand) * 100, 100); // cap at 100%
+
+  // Calculate budget usage
+  const solarCost = solar * energyCosts.solar;
+  const biogasCost = biogas * energyCosts.biogas;
+  const sTurbCost = sTurb * energyCosts.sTurb;
+  const lTurbCost = lTurb * energyCosts.lTurb;
+  const totalCost = solarCost + biogasCost + sTurbCost + lTurbCost;
+  const budgetPercentage = Math.min((totalCost / totalBudget) * 100, 100); // cap at 100%
+  const budgetRemaining = totalBudget - totalCost;
 
   // Update energy status
   $('#generatedEnergy').text(totalGenerated.toFixed(1));
   $('#demandEnergy').text(totalDemand);
   $('#energyDifference').text((totalGenerated - totalDemand).toFixed(1));
 
+  // Update budget status
+  $('#budgetUsed').text(totalCost.toFixed(1));
+  $('#budgetTotal').text(totalBudget);
+  $('#budgetRemaining').text(budgetRemaining.toFixed(1));
+
+  // Update energy bar
   $('#energyBarFill').css('width', `${percentage}%`);
-  $('#energyLabelText').text(`${totalGenerated.toFixed(1)} / ${totalDemand} kWh`);
+  $('#energyLabelText').text(`${totalGenerated.toFixed(1)} / ${totalDemand} GWh`);
+
+  // Update budget bar
+  $('#budgetBarFill').css('width', `${budgetPercentage}%`);
+  $('#budgetLabelText').text(`${totalCost.toFixed(1)} / ${totalBudget} mil.€`);
 
   drawSankey(solar, biogas, wind);
   const imageName = getTexelImageName(solar, biogas, sTurb, lTurb);

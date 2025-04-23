@@ -1,6 +1,7 @@
 // Variables
 $main-color: #86ceea;
 $accent-color: #557e3c;
+$budget-color: #e74c3c;
 $spacing: 1rem;
 
 // Breakpoints for responsive design
@@ -15,7 +16,7 @@ $breakpoint-mobile: 400px;
 body {
   font-family: sans-serif;
   margin: 0;
-  padding-top: 6rem; // matches header height
+  padding-top: 8rem; // increased to match expanded header height
   background: $main-color;
   color: black;
 }
@@ -27,7 +28,7 @@ header {
   padding: 0.25rem 1rem;
   background-color: $accent-color;
   height: auto;
-  min-height: 6rem;
+  min-height: 8rem; // increased for budget bar
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: fixed;
   top: 0;
@@ -65,7 +66,7 @@ header {
     }
   }
 
-  #energyBarContainer {
+  #energyBarContainer, #budgetBarContainer {
     height: 16px; // Slightly slimmer
     position: relative;
     width: 90%;
@@ -77,7 +78,11 @@ header {
     box-shadow: inset 0 0 4px rgba(0,0,0,0.6);
   }
 
-  #energyBarLabel {
+  #budgetBarContainer {
+    margin-bottom: 0.5rem;
+  }
+
+  #energyBarLabel, #budgetBarLabel {
     font-size: 0.75rem;
     position: absolute;
     top: 0;
@@ -99,6 +104,13 @@ header {
     width: 0%;
     transition: width 0.3s ease;
   }
+
+  #budgetBarFill {
+    height: 100%;
+    background: linear-gradient(to right, #f39c12, #f3e40f);
+    width: 0%;
+    transition: width 0.3s ease;
+  }
 }
 
 // Layout container
@@ -107,7 +119,7 @@ header {
   flex-direction: row;
   gap: $spacing;
   padding: $spacing;
-  min-height: calc(100vh - 6rem);
+  min-height: calc(100vh - 8rem); // Updated to match new header height
 }
 
 // Input panel
@@ -212,7 +224,7 @@ header {
 // Tablet Media Query
 @media screen and (max-width: $breakpoint-tablet) {
   body {
-    padding-top: 8rem; // Increased to accommodate taller header on tablet
+    padding-top: 10rem; // Increased to accommodate taller header on tablet
   }
 
   header {
@@ -235,7 +247,7 @@ header {
       }
     }
 
-    #energyBarContainer {
+    #energyBarContainer, #budgetBarContainer {
       width: 100%;
       margin: 0.25rem auto;
     }
@@ -273,7 +285,7 @@ header {
 // Mobile Media Query
 @media screen and (max-width: $breakpoint-mobile) {
   body {
-    padding-top: 9rem; // Even more space for the header
+    padding-top: 12rem; // Even more space for the header
   }
 
   header {

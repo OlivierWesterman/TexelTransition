@@ -5,7 +5,7 @@
 body {
   font-family: sans-serif;
   margin: 0;
-  padding-top: 6rem;
+  padding-top: 8rem;
   background: #86ceea;
   color: black;
 }
@@ -17,7 +17,7 @@ header {
   padding: 0.25rem 1rem;
   background-color: #557e3c;
   height: auto;
-  min-height: 6rem;
+  min-height: 8rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: fixed;
   top: 0;
@@ -51,7 +51,7 @@ header #energyStatus span {
 header #energyStatus span strong {
   font-weight: bold;
 }
-header #energyBarContainer {
+header #energyBarContainer, header #budgetBarContainer {
   height: 16px;
   position: relative;
   width: 90%;
@@ -62,7 +62,10 @@ header #energyBarContainer {
   overflow: hidden;
   box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.6);
 }
-header #energyBarLabel {
+header #budgetBarContainer {
+  margin-bottom: 0.5rem;
+}
+header #energyBarLabel, header #budgetBarLabel {
   font-size: 0.75rem;
   position: absolute;
   top: 0;
@@ -83,13 +86,19 @@ header #energyBarFill {
   width: 0%;
   transition: width 0.3s ease;
 }
+header #budgetBarFill {
+  height: 100%;
+  background: linear-gradient(to right, #f39c12, #f3e40f);
+  width: 0%;
+  transition: width 0.3s ease;
+}
 
 .layout {
   display: flex;
   flex-direction: row;
   gap: 1rem;
   padding: 1rem;
-  min-height: calc(100vh - 6rem);
+  min-height: calc(100vh - 8rem);
 }
 
 .input-panel {
@@ -175,7 +184,7 @@ header #energyBarFill {
 
 @media screen and (max-width: 768px) {
   body {
-    padding-top: 8rem;
+    padding-top: 10rem;
   }
   header {
     height: auto;
@@ -194,7 +203,7 @@ header #energyBarFill {
   header #energyStatus span {
     margin: 0.1rem 0;
   }
-  header #energyBarContainer {
+  header #energyBarContainer, header #budgetBarContainer {
     width: 100%;
     margin: 0.25rem auto;
   }
@@ -224,7 +233,7 @@ header #energyBarFill {
 }
 @media screen and (max-width: 400px) {
   body {
-    padding-top: 9rem;
+    padding-top: 12rem;
   }
   header {
     padding: 0.5rem 0.25rem;
