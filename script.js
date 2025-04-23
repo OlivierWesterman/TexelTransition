@@ -5,7 +5,7 @@ const energyCosts = {
   solar: .0004,     // €/unit
   biogas: 3.5,      // €/unit
   sTurb: .05,       // €/unit
-  lTurb: 6          // €/unit
+  lTurb: 3          // €/unit
 };
 
 // Annual yield of device or plant in GWh
@@ -13,11 +13,11 @@ const energyGains = {
   solar: 0.350,
   biogas: 42,
   sTurb: 0.03,
-  lTurb: 6.5
+  lTurb: 2.5
 };
  
 // Define total budget (in millions)
-const totalBudget = 300; // €
+const totalBudget = 4; // €
 
 const hotspotData = {
   Oosterend: {
@@ -44,25 +44,25 @@ const energySourceData = {
   Solar: {
     title: "Solar Panel",
     description: "One solar panel generates an amount of energy but also costs about an amount of money.",
-    image: "./resources/images/Oosterend.jpg",
+    image: "./resources/images/Zonnepaneel.jpg",
     split: {heat: 20, electric: 80}
   },
   Biogas: {
     title: "Anaerobic Co-digestion Plant",
     description: "Energy can be produced from large digestion chambers that convert biomass to methane which is used to generate power and heat.",
-    image: "./resources/images/Oosterend.jpg",
+    image: "./resources/images/Biodigester.jpg",
     split: {heat: 50, electric: 50}
   },
   smallTurbine: {
     title: "EAZ Wind Turbine",
     description: "These turbines are shorter than 2m and perfect to place in a garden or on a farm.",
-    image: "./resources/images/Oosterend.jpg",
+    image: "./resources/images/EAZ_Turbine.jpg",
     split: {heat: 15, electric: 85}
   },
   largeTurbine: {
     title: "Offshore Windmill",
     description: "These recognisable turbines can be built on the coast to generate energy from the oceanic breezes.",
-    image: "./resources/images/Oosterend.jpg",
+    image: "./resources/images/Offshore_Turbine.jpg",
     split: {heat: 15, electric: 85}
   }
 };
@@ -212,6 +212,11 @@ function updateChartAndImage() {
 }
 
 function showInfo(type) {
+  if (type.startsWith('source_')) {
+    showEnergySourceInfo(type.replace('source_', ''));
+    return;
+  }
+
   if (currentHotspot === type) {
     // Hide the info panel and reset state if clicking the same hotspot
     $('.info-panel').removeClass('show');
@@ -318,6 +323,13 @@ $(document).ready(() => {
   // Event listeners
   $('#solarInput, #biogasInput, #sTurbInput, #lTurbInput').on('input change', updateChartAndImage);
   
+  // Add event listener for info buttons
+  $('.info-btn').on('click', function(e) {
+    e.preventDefault(); // Prevent any default button behavior
+    const sourceType = $(this).data('source');
+    showEnergySourceInfo(sourceType);
+  });
+  
   // Debounce resize event for better performance
   let resizeTimer;
   $(window).on('resize', () => {
@@ -327,3 +339,55 @@ $(document).ready(() => {
     }, 250);
   });
 });
+
+function showEnergySourceInfo(sourceType) {
+  if (currentHotspot === `source_${sourceType}`) {
+    // Hide the info panel and reset state if clicking the same source
+    $('.info-panel').removeClass('show');
+    currentHotspot = null;
+    return;
+  }
+
+  currentHotspot = `source_${sourceType}`;
+  const data = energySourceData[sourceType];
+
+  // Update the right panel with the energy source information
+  $('#infoContent').html(`
+    <h3>${data.title}</h3>
+    <p>${data.description}</p>
+    <img src="${data.image}" alt="${data.title}">
+    <h4>Energy Split:</h4>
+    <ul>
+      <li>Heat: ${data.split.heat}%</li>
+      <li>Electric: ${data.split.electric}%</li>
+    </ul>
+    <div id="energySplitChart"></div>
+  `);
+
+  // Show the right panel
+  $('.info-panel').addClass('show');
+
+  // Use setTimeout to ensure the DOM has updated before drawing the chart
+  setTimeout(() => {
+    drawEnergySplitPieChart(data.split);
+    // Force a window resize event to make Plotly adjust the chart
+    window.dispatchEvent(new Event('resize'));
+  }, 50);
+}
+
+// Function to draw pie chart for energy source split
+function drawEnergySplitPieChart(splitData) {
+  Plotly.react('energySplitChart', [{
+    type: 'pie',
+    values: [splitData.heat, splitData.electric],
+    labels: ['Heat', 'Electric'],
+    marker: {
+      colors: ['coral', 'yellow']
+    },
+    textinfo: 'label+percent',
+    hoverinfo: 'label+value+percent'
+  }], {
+    margin: { t: 0, b: 0, l: 0, r: 0 },
+    showlegend: false
+  });
+}

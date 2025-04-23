@@ -1,12 +1,60 @@
-// Variables
+// Color variables
 $main-color: #86ceea;
 $accent-color: #557e3c;
 $budget-color: #e74c3c;
-$spacing: 1rem;
+$text-color: #000000;
+$text-light: #ffffff;
+$text-muted: #444444;
+$background-light: #f9f9f9;
+$border-color: #cccccc;
+$energy-bar-start: #4caf50;
+$energy-bar-end: #8bc34a;
+$budget-bar-start: #f39c12;
+$budget-bar-end: #f3e40f;
+$hotspot-bg: rgba(206, 188, 25, 0.4);
+$hotspot-border: rgb(151, 149, 23);
+$shadow-color: rgba(0, 0, 0, 0.1);
+$shadow-color-dark: rgba(0, 0, 0, 0.6);
+
+// Sizing variables
+$info-button-size: 20px;
+$info-button-radius: 50%;
+
+// Spacing variables
+$spacing-xs: 0.25rem;
+$spacing-sm: 0.5rem;
+$spacing-md: 0.75rem;
+$spacing-base: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;
+
+// Font size variables
+$font-xs: 0.75rem;
+$font-sm: 0.85rem;
+$font-base: 1rem;
+$font-md: 1.1rem;
+$font-lg: 1.2rem;
+$font-xl: 1.5rem;
+
+// Layout variables
+$header-height: 8rem;
+$header-height-tablet: 10rem;
+$header-height-mobile: 12rem;
+$input-panel-width: 30%;
+$map-panel-width: 50%;
+$info-panel-width: 25%;
+$hotspot-size: 40px;
+$hotspot-size-mobile: 30px;
+$bar-height: 24px;
+$bar-radius: 12px;
 
 // Breakpoints for responsive design
 $breakpoint-tablet: 768px;
 $breakpoint-mobile: 400px;
+
+// Transitions
+$transition-fast: 0.2s ease;
+$transition-normal: 0.3s ease;
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -16,20 +64,20 @@ $breakpoint-mobile: 400px;
 body {
   font-family: sans-serif;
   margin: 0;
-  padding-top: 8rem; // increased to match expanded header height
+  padding-top: $header-height;
   background: $main-color;
-  color: black;
+  color: $text-color;
 }
 
 header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0.25rem 1rem;
+  padding: $spacing-xs $spacing-base;
   background-color: $accent-color;
   height: auto;
-  min-height: 8rem; // increased for budget bar
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-height: $header-height;
+  box-shadow: 0 2px 4px $shadow-color;
   position: fixed;
   top: 0;
   left: 0;
@@ -37,28 +85,28 @@ header {
   z-index: 10;
 
   .title {
-    font-size: 1.2rem; // Smaller than default h1
-    margin: 0.5rem 0;
-    color: #fff;
+    font-size: $font-lg;
+    margin: $spacing-sm 0;
+    color: $text-light;
     text-align: center;
   }
 
   #energyStatus {
     display: flex;
     justify-content: space-around;
-    margin-top: 0.5rem;
+    margin-top: $spacing-sm;
     flex-wrap: wrap;
-    font-size: clamp(0.9rem, 1.5vw, 1.1rem);
-    gap: 0.5rem;
-    color: #fff;
+    font-size: clamp($font-sm, 1.5vw, $font-md);
+    gap: $spacing-sm;
+    color: $text-light;
     width: 100%;
 
     span {
-      font-size: 0.85rem;
-      color: #fff;
+      font-size: $font-sm;
+      color: $text-light;
       font-weight: bold;
       text-align: center;
-      padding: 0 0.25rem;
+      padding: 0 $spacing-xs;
 
       strong {
         font-weight: bold;
@@ -67,23 +115,22 @@ header {
   }
 
   #energyBarContainer, #budgetBarContainer {
-    height: 16px; // Slightly slimmer
+    height: $bar-height;
     position: relative;
     width: 90%;
-    height: 24px;
-    background-color: #444;
-    border-radius: 12px;
-    margin: 0.5rem auto;
+    background-color: $text-muted;
+    border-radius: $bar-radius;
+    margin: $spacing-sm auto;
     overflow: hidden;
-    box-shadow: inset 0 0 4px rgba(0,0,0,0.6);
+    box-shadow: inset 0 0 4px $shadow-color-dark;
   }
 
   #budgetBarContainer {
-    margin-bottom: 0.5rem;
+    margin-bottom: $spacing-sm;
   }
 
   #energyBarLabel, #budgetBarLabel {
-    font-size: 0.75rem;
+    font-size: $font-xs;
     position: absolute;
     top: 0;
     left: 0;
@@ -92,24 +139,24 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.9rem;
+    font-size: $font-sm;
     font-weight: bold;
-    color: #fff;
+    color: $text-light;
     pointer-events: none;
   }
   
   #energyBarFill {
     height: 100%;
-    background: linear-gradient(to right, #4caf50, #8bc34a);
+    background: linear-gradient(to right, $energy-bar-start, $energy-bar-end);
     width: 0%;
-    transition: width 0.3s ease;
+    transition: width $transition-normal;
   }
 
   #budgetBarFill {
     height: 100%;
-    background: linear-gradient(to right, #f39c12, #f3e40f);
+    background: linear-gradient(to right, $budget-bar-start, $budget-bar-end);
     width: 0%;
-    transition: width 0.3s ease;
+    transition: width $transition-normal;
   }
 }
 
@@ -117,9 +164,9 @@ header {
 .layout {
   display: flex;
   flex-direction: row;
-  gap: $spacing;
-  padding: $spacing;
-  min-height: calc(100vh - 8rem); // Updated to match new header height
+  gap: $spacing-base;
+  padding: $spacing-base;
+  min-height: calc(100vh - #{$header-height});
 }
 
 // Input panel
@@ -127,28 +174,63 @@ header {
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
-  gap: $spacing;
-  width: 30%; // Fixed width for the left panel
+  gap: $spacing-base;
+  width: $input-panel-width;
 
   label {
-    flex: 1 1 1;
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
     font-weight: bold;
-  }
-
-  // Input styles
-  input[type="number"] {
-    margin-top: 0.5rem;
-    padding: 0.5rem;
-    font-size: 1rem;
+    
+    // Fix for the info button positioning
+    .info-btn {
+      margin-left: $spacing-sm;
+      margin-right: $spacing-sm;
+      flex: 0 0 auto; // Prevent the button from growing or shrinking
+    }
+    
+    // Move the input to a new line and make it full width
+    input[type="number"] {
+      flex: 1 1 100%;
+      margin-top: $spacing-sm;
+      padding: $spacing-sm;
+      font-size: $font-base;
+    }
   }
 
   // Chart area
   .chart-panel {
     width: 100%;
     flex: 1;
-    box-shadow: 0px -2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0px -2px 5px $shadow-color;
+  }
+}
+
+// Info button styles
+.info-btn {
+  width: $info-button-size;
+  height: $info-button-size;
+  border-radius: $info-button-radius;
+  background-color: $border-color;
+  color: $text-light;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-xs;
+  transition: transform $transition-fast, background-color $transition-fast;
+  
+  &:hover {
+    background-color: darken($accent-color, 5%);
+    transform: scale(1.1);
+  }
+  
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba($accent-color, 0.5);
   }
 }
 
@@ -157,7 +239,7 @@ header {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 50%; // Main content area for the map
+  width: $map-panel-width;
   position: relative;
 
   #interactiveMap {
@@ -169,13 +251,13 @@ header {
 
   .hotspot {
     position: absolute;
-    width: 40px;
-    height: 40px;
+    width: $hotspot-size;
+    height: $hotspot-size;
     border-radius: 50%;
-    background-color: rgba(255, 0, 0, 0.4);
-    border: 2px solid red;
+    background-color: $hotspot-bg;
+    border: 2px solid $hotspot-border;
     cursor: pointer;
-    transition: transform 0.2s ease;
+    transition: transform $transition-fast;
     
     &:hover {
       transform: scale(1.1);
@@ -185,12 +267,12 @@ header {
 
 // Info Panel
 .info-panel {
-  width: 25%; // Fixed width for the right panel
-  display: none; // Hidden by default
-  padding: $spacing;
-  background-color: #fff;
-  border-left: 1px solid #ccc;
-  box-shadow: -2px 0px 5px rgba(0,0,0,0.1);
+  width: $info-panel-width;
+  display: none;
+  padding: $spacing-base;
+  background-color: $text-light;
+  border-left: 1px solid $border-color;
+  box-shadow: -2px 0px 5px $shadow-color;
 
   // This is the corrected part - class modifier should be connected to the parent
   &.show {
@@ -199,15 +281,15 @@ header {
 
   // Fix ID selector
   #infoContent {
-    padding: 1rem;
-    background-color: #f9f9f9;
-    border-radius: 0.5rem;
+    padding: $spacing-base;
+    background-color: $background-light;
+    border-radius: $spacing-sm;
     
     img {
       max-width: 100%;
       height: auto;
-      margin: 1rem 0;
-      border-radius: 0.25rem;
+      margin: $spacing-base 0;
+      border-radius: $spacing-xs;
     }
     
     h3 {
@@ -216,7 +298,7 @@ header {
     }
     
     ul {
-      padding-left: 1.5rem;
+      padding-left: $spacing-lg;
     }
   }
 }
@@ -224,80 +306,82 @@ header {
 // Tablet Media Query
 @media screen and (max-width: $breakpoint-tablet) {
   body {
-    padding-top: 10rem; // Increased to accommodate taller header on tablet
+    padding-top: $header-height-tablet;
   }
 
   header {
     height: auto;
-    padding: 0.5rem;
+    padding: $spacing-sm;
 
     .title {
-      font-size: 1.1rem;
-      margin-bottom: 0.25rem;
+      font-size: $font-md;
+      margin-bottom: $spacing-xs;
     }
 
     #energyStatus {
       flex-direction: column;
       align-items: center;
-      gap: 0.25rem;
-      margin-top: 0.25rem;
+      gap: $spacing-xs;
+      margin-top: $spacing-xs;
 
       span {
-        margin: 0.1rem 0;
+        margin: $spacing-xs / 2 0;
       }
     }
 
     #energyBarContainer, #budgetBarContainer {
       width: 100%;
-      margin: 0.25rem auto;
+      margin: $spacing-xs auto;
     }
   }
 
   .layout {
     flex-direction: column;
-    gap: 1rem;
+    gap: $spacing-base;
   }
 
   .input-panel {
     width: 100%;
     flex-direction: row;
     justify-content: space-between;
+    flex-wrap: wrap;
 
     label {
-      flex: 1;
-      padding-right: 0.5rem;
+      flex: 1 1 45%; // Allow two labels per row
+      padding-right: $spacing-sm;
+      margin-bottom: $spacing-sm;
     }
   }
 
   .map-panel {
     width: 100%;
-    margin-bottom: 1rem;
+    margin-bottom: $spacing-base;
   }
 
   .info-panel {
     width: 100%;
     border-left: none;
-    border-top: 1px solid #ccc;
-    box-shadow: 0px -2px 5px rgba(0,0,0,0.1);
+    border-top: 1px solid $border-color;
+    box-shadow: 0px -2px 5px $shadow-color;
   }
 }
 
 // Mobile Media Query
 @media screen and (max-width: $breakpoint-mobile) {
   body {
-    padding-top: 12rem; // Even more space for the header
+    padding-top: $header-height-mobile;
   }
 
   header {
-    padding: 0.5rem 0.25rem;
+    padding: $spacing-sm $spacing-xs;
 
     .title {
-      font-size: 1rem;
+      font-size: $font-base;
     }
 
     #energyStatus {
       span {
-        font-size: 0.75rem;
+        font-size: $font-xs;
         width: 100%;
         text-align: center;
       }
@@ -306,38 +390,39 @@ header {
 
   .input-panel {
     flex-direction: column;
-    gap: 0.5rem;
+    gap: $spacing-sm;
 
     label {
+      flex: 1 1 100%; // Stack labels vertically
       padding-right: 0;
-      margin-bottom: 0.5rem;
+      margin-bottom: $spacing-sm;
     }
 
     input[type="number"] {
-      font-size: 0.9rem;
-      padding: 0.4rem;
+      font-size: $font-sm;
+      padding: $spacing-xs;
     }
   }
 
   .hotspot {
-    width: 30px !important;
-    height: 30px !important;
+    width: $hotspot-size-mobile !important;
+    height: $hotspot-size-mobile !important;
   }
 
   .info-panel {
     #infoContent {
-      padding: 0.75rem;
+      padding: $spacing-md;
       
       h3 {
-        font-size: 1.1rem;
+        font-size: $font-md;
       }
       
       h4 {
-        font-size: 1rem;
+        font-size: $font-base;
       }
       
       ul {
-        padding-left: 1.25rem;
+        padding-left: $spacing-md;
       }
     }
   }
