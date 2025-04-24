@@ -100,6 +100,29 @@ header #budgetBarFill {
   min-height: calc(100vh - 8rem);
 }
 
+.scenario-selector {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+.scenario-selector label {
+  width: 100%;
+}
+.scenario-selector select {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+  width: 100%;
+  border: 1px solid #cccccc;
+  border-radius: 0.25rem;
+  background-color: #ffffff;
+  cursor: pointer;
+}
+.scenario-selector select:focus {
+  outline: none;
+  border-color: #557e3c;
+  box-shadow: 0 0 0 2px rgba(85, 126, 60, 0.3);
+}
+
 .input-panel {
   display: flex;
   flex-wrap: wrap;
@@ -209,6 +232,90 @@ header #budgetBarFill {
 }
 .info-panel #infoContent ul {
   padding-left: 1.5rem;
+}
+
+.energy-split-container {
+  margin: 1rem 0;
+}
+.energy-split-container .split-details {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+.energy-split-container .split-details .split-heat {
+  color: coral;
+}
+.energy-split-container .split-details .split-electric {
+  color: #f3d40f;
+}
+
+.subtypes-container {
+  margin-top: 1.5rem;
+}
+.subtypes-container .subtypes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.subtypes-container .subtype-item {
+  background-color: rgb(254.1, 254.1, 254.1);
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.subtypes-container .subtype-item h5 {
+  margin-top: 0;
+  margin-bottom: 0.25rem;
+  color: #557e3c;
+  border-bottom: 1px solid #cccccc;
+  padding-bottom: 0.25rem;
+}
+.subtypes-container .subtype-item .subtype-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.subtypes-container .subtype-item .subtype-details .keywords {
+  font-size: 0.85rem;
+}
+.subtypes-container .subtype-item .subtype-details .keywords span {
+  font-weight: bold;
+}
+.subtypes-container .subtype-item .subtype-details .ratings {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.subtypes-container .subtype-item .subtype-details .ratings .rating {
+  flex: 1 1 48%;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+}
+.subtypes-container .subtype-item .subtype-details .ratings .rating span:first-child {
+  font-weight: bold;
+}
+.subtypes-container .subtype-item .subtype-details .ratings .rating .rating-value {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: #ffffff;
+  text-align: center;
+  line-height: 24px;
+  font-weight: bold;
+}
+.subtypes-container .subtype-item .subtype-details .ratings .rating .rating-a {
+  background-color: #2ecc71;
+}
+.subtypes-container .subtype-item .subtype-details .ratings .rating .rating-b {
+  background-color: #f39c12;
+}
+.subtypes-container .subtype-item .subtype-details .ratings .rating .rating-c {
+  background-color: #e74c3c;
 }
 
 @media screen and (max-width: 768px) {

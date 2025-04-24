@@ -169,6 +169,33 @@ header {
   min-height: calc(100vh - #{$header-height});
 }
 
+// Scenario selector styling
+.scenario-selector {
+  width: 100%;
+  margin-bottom: $spacing-base;
+  
+  label {
+    width: 100%;
+  }
+  
+  select {
+    margin-top: $spacing-sm;
+    padding: $spacing-sm;
+    font-size: $font-base;
+    width: 100%;
+    border: 1px solid $border-color;
+    border-radius: $spacing-xs;
+    background-color: $text-light;
+    cursor: pointer;
+    
+    &:focus {
+      outline: none;
+      border-color: $accent-color;
+      box-shadow: 0 0 0 2px rgba($accent-color, 0.3);
+    }
+  }
+}
+
 // Input panel
 .input-panel {
   display: flex;
@@ -299,6 +326,106 @@ header {
     
     ul {
       padding-left: $spacing-lg;
+    }
+  }
+}
+
+.energy-split-container {
+  margin: $spacing-base 0;
+  
+  .split-details {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: $spacing-sm;
+    font-weight: bold;
+    
+    .split-heat {
+      color: coral;
+    }
+    
+    .split-electric {
+      color: #f3d40f;
+    }
+  }
+}
+
+.subtypes-container {
+  margin-top: $spacing-lg;
+  
+  .subtypes-list {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-base;
+  }
+  
+  .subtype-item {
+    background-color: lighten($background-light, 2%);
+    border-radius: $spacing-xs;
+    padding: $spacing-sm;
+    box-shadow: 0 1px 3px $shadow-color;
+    
+    h5 {
+      margin-top: 0;
+      margin-bottom: $spacing-xs;
+      color: $accent-color;
+      border-bottom: 1px solid $border-color;
+      padding-bottom: $spacing-xs;
+    }
+    
+    .subtype-details {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-sm;
+      
+      .keywords {
+        font-size: $font-sm;
+        
+        span {
+          font-weight: bold;
+        }
+      }
+      
+      .ratings {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        
+        .rating {
+          flex: 1 1 48%;
+          display: flex;
+          align-items: center;
+          gap: $spacing-xs;
+          font-size: $font-sm;
+          margin-bottom: $spacing-xs;
+          
+          span:first-child {
+            font-weight: bold;
+          }
+          
+          .rating-value {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            color: $text-light;
+            text-align: center;
+            line-height: 24px;
+            font-weight: bold;
+          }
+          
+          .rating-a {
+            background-color: #2ecc71; // Green for A rating
+          }
+          
+          .rating-b {
+            background-color: #f39c12; // Orange for B rating
+          }
+          
+          .rating-c {
+            background-color: #e74c3c; // Red for C rating
+          }
+        }
+      }
     }
   }
 }

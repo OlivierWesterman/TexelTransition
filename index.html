@@ -31,6 +31,17 @@
   <main class="layout">
     <!-- Left Panel -->
     <section class="input-panel">
+      
+      <div class="scenario-selector">
+        <label>Scenario: 
+          <select id="scenarioSelect">
+            <option value="current">Current</option>
+            <option value="scenarioA">Scenario A</option>
+            <option value="scenarioB">Scenario B</option>
+          </select>
+        </label>
+      </div>
+
       <label>Solar Panels: (in hectares) <button class="info-btn" data-source="Solar">i</button> <input type="number" id="solarInput" value="0"></label>
       <label>Biogas Digesters: <button class="info-btn" data-source="Biogas">i</button> <input type="number" id="biogasInput" value="0"></label>
       <label>Small Wind Turbines: <button class="info-btn" data-source="smallTurbine">i</button> <input type="number" id="sTurbInput" value="0"></label>

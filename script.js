@@ -2,7 +2,7 @@ let currentHotspot = null;
 
 // Cost per unit for each energy source in millions of euro
 const energyCosts = {
-  solar: .0004,     // €/unit
+  solar: 1.1,     // €/unit
   biogas: 3.5,      // €/unit
   sTurb: .05,       // €/unit
   lTurb: 3          // €/unit
@@ -43,22 +43,22 @@ const hotspotData = {
 const energySourceData = {
   Solar: {
     title: "Solar Panel",
-    description: "One solar panel generates an amount of energy but also costs about an amount of money.",
+    description: "Solar panels capture sunlight and convert it into electricity and heat. They are easy to install, require low maintenance, and are ideal for rooftops or floating structures. Installation cost varies based on panel type and placement.",
     image: "./resources/images/Zonnepaneel.jpg",
-    split: {heat: 60, electric: 20},
+    split: { heat: 60, electric: 20 },
     subtypes: {
       rooftops: {
-        keywords: "Quiet, unobstrusive",
+        keywords: "Quiet, unobtrusive, residential",
         efficiency: 'B',
         environmental_impact: 'A',
       },
       facades: {
-        keywords: "Visible, proud",
+        keywords: "Visible, integrated into building design",
         efficiency: 'C',
         environmental_impact: 'B'
       },
       floats: {
-        keywords: "Lorem, ipsum",
+        keywords: "Space-efficient, cooling effect from water",
         efficiency: 'B',
         environmental_impact: 'B'
       }
@@ -66,74 +66,100 @@ const energySourceData = {
   },
   Biogas: {
     title: "Biogas",
-    description: "Energy can be produced from large digestion chambers that convert biomass to methane which is used to generate power and heat.",
+    description: "Biogas is produced by anaerobic digestion of organic waste, generating methane for use in combined heat and power (CHP) systems. It's a flexible and sustainable solution for local energy loops.",
     image: "./resources/images/Biodigester.jpg",
-    split: {heat: 50, electric: 50},
+    split: { heat: 50, electric: 50 },
     subtypes: {
-      rooftops: {
-        keywords: "Lorem, ipsum",
+      farm_scale: {
+        keywords: "Manure, crop waste, rural application",
+        efficiency: 'A',
+        environmental_impact: 'B'
+      },
+      industrial: {
+        keywords: "Food waste, sewage, large-scale plants",
         efficiency: 'B',
         environmental_impact: 'B'
       },
-      facades: {
-        keywords: "Lorem, ipsum",
-        efficiency: 'B',
-        environmental_impact: 'B'
-      },
-      floats: {
-        keywords: "Lorem, ipsum",
-        efficiency: 'B',
-        environmental_impact: 'B'
+      community: {
+        keywords: "Neighborhood compost, small footprint",
+        efficiency: 'C',
+        environmental_impact: 'A'
       }
     }
   },
   smallTurbine: {
     title: "EAZ Wind Turbine",
-    description: "These turbines are shorter than 2m and perfect to place in a garden or on a farm.",
+    description: "Small wind turbines are ideal for decentralized electricity generation, especially in semi-rural or open areas. They can supplement solar or grid power, and require consistent wind flow for optimal output.",
     image: "./resources/images/EAZ_Turbine.jpg",
-    split: {heat: 15, electric: 85},
+    split: { heat: 15, electric: 85 },
     subtypes: {
-      rooftops: {
-        keywords: "Lorem, ipsum",
+      farm: {
+        keywords: "Farmland, energy independence",
         efficiency: 'B',
         environmental_impact: 'B'
       },
-      facades: {
-        keywords: "Lorem, ipsum",
-        efficiency: 'B',
-        environmental_impact: 'B'
+      residential: {
+        keywords: "Small-scale, garden-mounted",
+        efficiency: 'C',
+        environmental_impact: 'A'
       },
-      floats: {
-        keywords: "Lorem, ipsum",
+      off_grid: {
+        keywords: "Remote cabins, backup power",
         efficiency: 'B',
-        environmental_impact: 'B'
+        environmental_impact: 'A'
       }
     }
   },
   largeTurbine: {
     title: "Offshore Windmill",
-    description: "These recognisable turbines can be built on the coast to generate energy from the oceanic breezes.",
+    description: "Large offshore wind turbines capture powerful sea winds to generate high-output renewable electricity. They are expensive to install but offer excellent efficiency and minimal land use.",
     image: "./resources/images/Offshore_Turbine.jpg",
-    split: {heat: 15, electric: 85},
+    split: { heat: 15, electric: 85 },
     subtypes: {
-      rooftops: {
-        keywords: "Lorem, ipsum",
+      offshore: {
+        keywords: "Deep-sea, high-yield, stable winds",
+        efficiency: 'A',
+        environmental_impact: 'B'
+      },
+      nearshore: {
+        keywords: "Closer to coast, easier access",
         efficiency: 'B',
         environmental_impact: 'B'
       },
-      facades: {
-        keywords: "Lorem, ipsum",
+      onshore_large: {
+        keywords: "Wide open land, high visual impact",
         efficiency: 'B',
-        environmental_impact: 'B'
-      },
-      floats: {
-        keywords: "Lorem, ipsum",
-        efficiency: 'B',
-        environmental_impact: 'B'
+        environmental_impact: 'C'
       }
     }
   }
 };
+
+
+const scenarios = {
+  current: {solar: 25, biogas: 1, sTurb: 10, lTurb: 0},
+  scenarioA: {solar: 10, biogas: 3, sTurb: 10, lTurb: 4},
+  scenarioB: {solar: 30, biogas: 1, sTurb: 600, lTurb: 0}
+};
+
+// Calculate baseline costs for the current scenario
+const baselineSolarCost = scenarios.current.solar * energyCosts.solar;
+const baselineBiogasCost = scenarios.current.biogas * energyCosts.biogas;
+const baselineSTurbCost = scenarios.current.sTurb * energyCosts.sTurb;
+const baselineLTurbCost = scenarios.current.lTurb * energyCosts.lTurb;
+const baselineTotalCost = baselineSolarCost + baselineBiogasCost + baselineSTurbCost + baselineLTurbCost;
+
+// Function to calculate incremental costs above baseline
+function calculateIncrementalCost(solar, biogas, sTurb, lTurb) {
+  // Calculate total cost of current inputs
+  const totalSolarCost = Math.max(0, (solar - scenarios.current.solar)) * energyCosts.solar;
+  const totalBiogasCost = Math.max(0, (biogas - scenarios.current.biogas)) * energyCosts.biogas;
+  const totalSTurbCost = Math.max(0, (sTurb - scenarios.current.sTurb)) * energyCosts.sTurb;
+  const totalLTurbCost = Math.max(0, (lTurb - scenarios.current.lTurb)) * energyCosts.lTurb;
+  
+  // Only count costs for additions beyond baseline
+  return totalSolarCost + totalBiogasCost + totalSTurbCost + totalLTurbCost;
+}
 
 function drawSankey(solar, biogas, wind) {
   const data = {
@@ -157,11 +183,25 @@ function drawSankey(solar, biogas, wind) {
   Plotly.react("sankeyChart", [data], { title: "Energy Flow" });
 }
 
+function loadScenario(scenarioName) {
+  const scenario = scenarios[scenarioName];
+  
+  if (scenario) {
+    $('#solarInput').val(scenario.solar);
+    $('#biogasInput').val(scenario.biogas);
+    $('#sTurbInput').val(scenario.sTurb);
+    $('#lTurbInput').val(scenario.lTurb);
+    
+    // Update the charts and visuals
+    updateChartAndImage();
+  }
+}
+
 function getTexelImageName(solar, gas, sTurb, lTurb) {
-  const s = solar > 49999;
-  const g = gas > 4;
-  const sT = sTurb > 4999;
-  const lT = lTurb > 24;
+  const s = solar > 40;
+  const g = gas > 6;
+  const sT = sTurb > 350;
+  const lT = lTurb > 5;
 
   // None
   if (!s && !g && !sT && !lT) return "./resources/Images/Texel_0.png"
@@ -244,22 +284,18 @@ function updateChartAndImage() {
   const lTurb = parseFloat($('#lTurbInput').val()) || 0;
   const wind = (sTurb + lTurb)/2;
 
-  const solarGain = solar * energyGains.solar
-  const biogasGain = biogas * energyGains.biogas
-  const sTurbGain = sTurb * energyGains.sTurb
-  const lTurbGain = lTurb * energyGains.lTurb
+  const solarGain = solar * energyGains.solar;
+  const biogasGain = biogas * energyGains.biogas;
+  const sTurbGain = sTurb * energyGains.sTurb;
+  const lTurbGain = lTurb * energyGains.lTurb;
   const totalGenerated = solarGain + biogasGain + sTurbGain + lTurbGain;
   const totalDemand = 379; // You can make this dynamic later if needed
   const percentage = Math.min((totalGenerated / totalDemand) * 100, 100); // cap at 100%
 
-  // Calculate budget usage
-  const solarCost = solar * energyCosts.solar;
-  const biogasCost = biogas * energyCosts.biogas;
-  const sTurbCost = sTurb * energyCosts.sTurb;
-  const lTurbCost = lTurb * energyCosts.lTurb;
-  const totalCost = solarCost + biogasCost + sTurbCost + lTurbCost;
-  const budgetPercentage = Math.min((totalCost / totalBudget) * 100, 100); // cap at 100%
-  const budgetRemaining = totalBudget - totalCost;
+  // Calculate incremental budget usage
+  const incrementalCost = calculateIncrementalCost(solar, biogas, sTurb, lTurb);
+  const budgetPercentage = Math.min((incrementalCost / totalBudget) * 100, 100); // cap at 100%
+  const budgetRemaining = totalBudget - incrementalCost;
 
   // Update energy status
   $('#generatedEnergy').text(totalGenerated.toFixed(1));
@@ -267,17 +303,17 @@ function updateChartAndImage() {
   $('#energyDifference').text((totalGenerated - totalDemand).toFixed(1));
 
   // Update budget status
-  $('#budgetUsed').text(totalCost.toFixed(1));
+  $('#budgetUsed').text(incrementalCost.toFixed(1));
   $('#budgetTotal').text(totalBudget);
   $('#budgetRemaining').text(budgetRemaining.toFixed(1));
 
   // Update energy bar
   $('#energyBarFill').css('width', `${percentage}%`);
-  $('#energyLabelText').text(`${totalGenerated.toFixed(1)} / ${totalDemand} GWh`);
+  $('#energyLabelText').text(`Self-production: ${totalGenerated.toFixed(1)} / ${totalDemand} GWh`);
 
   // Update budget bar
   $('#budgetBarFill').css('width', `${budgetPercentage}%`);
-  $('#budgetLabelText').text(`${totalCost.toFixed(1)} / ${totalBudget} mil.€`);
+  $('#budgetLabelText').text(`Investment: ${incrementalCost.toFixed(1)} / ${totalBudget} mil.€`);
 
   drawSankey(solar, biogas, wind);
   const imageName = getTexelImageName(solar, biogas, sTurb, lTurb);
@@ -395,10 +431,18 @@ $(document).ready(() => {
   updateChartAndImage();
   resizeHotspots(); // This will also call positionHotspots
   
-  // Event listeners
+  loadScenario('current');
+  
+  // Eevent listener for scenario dropdown
+  $('#scenarioSelect').on('change', function() {
+    const selectedScenario = $(this).val();
+    loadScenario(selectedScenario);
+  });
+
+  // Change Event listeners
   $('#solarInput, #biogasInput, #sTurbInput, #lTurbInput').on('input change', updateChartAndImage);
   
-  // Add event listener for info buttons
+  // Event listener for info buttons
   $('.info-btn').on('click', function(e) {
     e.preventDefault(); // Prevent any default button behavior
     const sourceType = $(this).data('source');
@@ -426,17 +470,51 @@ function showEnergySourceInfo(sourceType) {
   currentHotspot = `source_${sourceType}`;
   const data = energySourceData[sourceType];
 
+  // Create HTML for subtypes - now they're different for each energy source
+  let subtypesHTML = '';
+  for (const [subtypeKey, subtypeData] of Object.entries(data.subtypes)) {
+    const formattedName = subtypeKey.replace(/_/g, ' ');
+    subtypesHTML += `
+      <div class="subtype-item">
+        <h5>${formattedName.charAt(0).toUpperCase() + formattedName.slice(1)}</h5>
+        <div class="subtype-details">
+          <div class="keywords"><span>Keywords:</span> ${subtypeData.keywords}</div>
+          <div class="ratings">
+            <div class="rating efficiency">
+              <span>Efficiency:</span> 
+              <span class="rating-value rating-${subtypeData.efficiency.toLowerCase()}">${subtypeData.efficiency}</span>
+            </div>
+            <div class="rating environmental">
+              <span>Environmental Impact:</span> 
+              <span class="rating-value rating-${subtypeData.environmental_impact.toLowerCase()}">${subtypeData.environmental_impact}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
   // Update the right panel with the energy source information
   $('#infoContent').html(`
     <h3>${data.title}</h3>
     <p>${data.description}</p>
     <img src="${data.image}" alt="${data.title}">
-    <h4>Energy Split:</h4>
-    <ul>
-      <li>Heat: ${data.split.heat}%</li>
-      <li>Electric: ${data.split.electric}%</li>
-    </ul>
-    <div id="energySplitChart"></div>
+    
+    <div class="energy-split-container">
+      <h4>Energy Output:</h4>
+      <div class="split-details">
+        <div class="split-heat">Heat: ${data.split.heat}%</div>
+        <div class="split-electric">Electric: ${data.split.electric}%</div>
+      </div>
+      <div id="energySplitChart"></div>
+    </div>
+    
+    <div class="subtypes-container">
+      <h4>Implementation Types:</h4>
+      <div class="subtypes-list">
+        ${subtypesHTML}
+      </div>
+    </div>
   `);
 
   // Show the right panel
