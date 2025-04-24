@@ -10,14 +10,14 @@ const energyCosts = {
 
 // Annual yield of device or plant in GWh
 const energyGains = {
-  solar: 0.350,
+  solar: 2,
   biogas: 42,
-  sTurb: 0.03,
-  lTurb: 2.5
+  sTurb: 0.175,
+  lTurb: 30
 };
  
 // Define total budget (in millions)
-const totalBudget = 4; // €
+const totalBudget = 40; // €
 
 const hotspotData = {
   Oosterend: {
@@ -45,25 +45,93 @@ const energySourceData = {
     title: "Solar Panel",
     description: "One solar panel generates an amount of energy but also costs about an amount of money.",
     image: "./resources/images/Zonnepaneel.jpg",
-    split: {heat: 20, electric: 80}
+    split: {heat: 60, electric: 20},
+    subtypes: {
+      rooftops: {
+        keywords: "Quiet, unobstrusive",
+        efficiency: 'B',
+        environmental_impact: 'A',
+      },
+      facades: {
+        keywords: "Visible, proud",
+        efficiency: 'C',
+        environmental_impact: 'B'
+      },
+      floats: {
+        keywords: "Lorem, ipsum",
+        efficiency: 'B',
+        environmental_impact: 'B'
+      }
+    }
   },
   Biogas: {
-    title: "Anaerobic Co-digestion Plant",
+    title: "Biogas",
     description: "Energy can be produced from large digestion chambers that convert biomass to methane which is used to generate power and heat.",
     image: "./resources/images/Biodigester.jpg",
-    split: {heat: 50, electric: 50}
+    split: {heat: 50, electric: 50},
+    subtypes: {
+      rooftops: {
+        keywords: "Lorem, ipsum",
+        efficiency: 'B',
+        environmental_impact: 'B'
+      },
+      facades: {
+        keywords: "Lorem, ipsum",
+        efficiency: 'B',
+        environmental_impact: 'B'
+      },
+      floats: {
+        keywords: "Lorem, ipsum",
+        efficiency: 'B',
+        environmental_impact: 'B'
+      }
+    }
   },
   smallTurbine: {
     title: "EAZ Wind Turbine",
     description: "These turbines are shorter than 2m and perfect to place in a garden or on a farm.",
     image: "./resources/images/EAZ_Turbine.jpg",
-    split: {heat: 15, electric: 85}
+    split: {heat: 15, electric: 85},
+    subtypes: {
+      rooftops: {
+        keywords: "Lorem, ipsum",
+        efficiency: 'B',
+        environmental_impact: 'B'
+      },
+      facades: {
+        keywords: "Lorem, ipsum",
+        efficiency: 'B',
+        environmental_impact: 'B'
+      },
+      floats: {
+        keywords: "Lorem, ipsum",
+        efficiency: 'B',
+        environmental_impact: 'B'
+      }
+    }
   },
   largeTurbine: {
     title: "Offshore Windmill",
     description: "These recognisable turbines can be built on the coast to generate energy from the oceanic breezes.",
     image: "./resources/images/Offshore_Turbine.jpg",
-    split: {heat: 15, electric: 85}
+    split: {heat: 15, electric: 85},
+    subtypes: {
+      rooftops: {
+        keywords: "Lorem, ipsum",
+        efficiency: 'B',
+        environmental_impact: 'B'
+      },
+      facades: {
+        keywords: "Lorem, ipsum",
+        efficiency: 'B',
+        environmental_impact: 'B'
+      },
+      floats: {
+        keywords: "Lorem, ipsum",
+        efficiency: 'B',
+        environmental_impact: 'B'
+      }
+    }
   }
 };
 
@@ -90,7 +158,7 @@ function drawSankey(solar, biogas, wind) {
 }
 
 function getTexelImageName(solar, gas, sTurb, lTurb) {
-  const s = solar > 499;
+  const s = solar > 49999;
   const g = gas > 4;
   const sT = sTurb > 4999;
   const lT = lTurb > 24;
