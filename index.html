@@ -1,24 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Basic document setup -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Texel Energy Transition</title>
+  <!-- Link to external stylesheet -->
   <link rel="stylesheet" href="style.css" />
+  <!-- External JavaScript libraries -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 
-
 <body>
+  <!-- Header with application title and status bars -->
   <header>
     <h1 class="title">Texel Energy Transition</h1>
+    <!-- Energy progress bar showing current energy generation vs demand -->
     <div id="energyBarContainer">
       <div id="energyBarFill"></div>
       <div id="energyBarLabel">
         <span id="energyLabelText">0 / 100 kWh</span>
       </div>
     </div>
+    <!-- Budget progress bar showing current spending vs total budget -->
     <div id="budgetBarContainer">
       <div id="budgetBarFill"></div>
       <div id="budgetBarLabel">
@@ -27,11 +32,11 @@
     </div>
   </header>
   
-
+  <!-- Main application layout with three panels -->
   <main class="layout">
-    <!-- Left Panel -->
+    <!-- Left Panel: Energy input controls and chart -->
     <section class="input-panel">
-      
+      <!-- Scenario selection dropdown -->
       <div class="scenario-selector">
         <label>Scenario: 
           <select id="scenarioSelect">
@@ -42,31 +47,37 @@
         </label>
       </div>
 
+      <!-- Energy source input controls with info buttons -->
       <label>Solar Panels: (in hectares) <button class="info-btn" data-source="Solar">i</button> <input type="number" id="solarInput" value="0"></label>
       <label>Biogas Digesters: <button class="info-btn" data-source="Biogas">i</button> <input type="number" id="biogasInput" value="0"></label>
       <label>Small Wind Turbines: <button class="info-btn" data-source="smallTurbine">i</button> <input type="number" id="sTurbInput" value="0"></label>
       <label>Large Wind Turbines: <button class="info-btn" data-source="largeTurbine">i</button> <input type="number" id="lTurbInput" value="0"></label>
+      
+      <!-- Sankey diagram container showing energy flow -->
       <section class="chart-panel">
         <div id="sankeyChart"></div>
       </section>
     </section>
   
-    <!-- Middle Panel -->
+    <!-- Middle Panel: Interactive map with hotspots -->
     <section class="map-panel">
       <div id="interactiveMap">
+        <!-- Base map image that changes based on selected energy mix -->
         <img id="texelMap" src="./resources/Images/Texel_0.png" alt="Texel Map" />
+        <!-- Interactive hotspots representing different areas on the island -->
         <div class="hotspot" id="Oosterend" onclick="showInfo('Oosterend')"></div>
         <div class="hotspot" id="Den_Burg" onclick="showInfo('Den_Burg')"></div>
         <div class="hotspot" id="Oudeschild" onclick="showInfo('Oudeschild')"></div>
       </div>
     </section>
   
-    <!-- Right Panel (hidden by default) -->
+    <!-- Right Panel: Information display (hidden by default) -->
     <section class="info-panel">
       <div id="infoContent"></div>
     </section>
   </main>  
 
+  <!-- Link to external JavaScript file -->
   <script src="script.js"></script>
 </body>
 </html>

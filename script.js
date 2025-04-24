@@ -1,24 +1,33 @@
+// Global variable tracking the currently selected location or energy source
 let currentHotspot = null;
 
-// Cost per unit for each energy source in millions of euro
+// Unit costs for different energy sources (in millions of euro)
 const energyCosts = {
-  solar: 1.1,     // €/unit
-  biogas: 3.5,      // €/unit
-  sTurb: .05,       // €/unit
-  lTurb: 3          // €/unit
+  solar: 1.1,     // Cost per solar unit (€M)
+  biogas: 3.5,    // Cost per biogas plant (€M)
+  sTurb: .05,     // Cost per small turbine (€M)
+  lTurb: 3        // Cost per large offshore turbine (€M)
 };
 
-// Annual yield of device or plant in GWh
+// Annual energy production per unit (in GWh)
 const energyGains = {
-  solar: 2,
-  biogas: 42,
-  sTurb: 0.175,
-  lTurb: 30
+  solar: 2,       // Output per solar unit (GWh)
+  biogas: 42,     // Output per biogas plant (GWh)
+  sTurb: 0.175,   // Output per small turbine (GWh)
+  lTurb: 30       // Output per large offshore turbine (GWh)
 };
  
-// Define total budget (in millions)
-const totalBudget = 40; // €
+// Define available investment budget (in millions of euros)
+const totalBudget = 40; // €M
 
+/**
+ * Data for specific locations/settlements on Texel
+ * Each location includes:
+ * - Description of the area
+ * - Image path for visualization
+ * - Position coordinates on the map (percentage-based)
+ * - Energy distribution preferences by type
+ */
 const hotspotData = {
   Oosterend: {
     description: "Oosterend has a lot of lorem ipsum potential and lorem ipsum",
@@ -40,6 +49,11 @@ const hotspotData = {
   }
 };
 
+/**
+ * Detailed information about each energy source
+ * Includes type descriptions, efficiency ratings, environmental impacts,
+ * and implementation subtypes with their characteristics
+ */
 const energySourceData = {
   Solar: {
     title: "Solar Panel",
@@ -67,7 +81,7 @@ const energySourceData = {
   Biogas: {
     title: "Biogas",
     description: "Biogas is produced by anaerobic digestion of organic waste, generating methane for use in combined heat and power (CHP) systems. It's a flexible and sustainable solution for local energy loops.",
-    image: "./resources/images/Biodigester.jpg",
+    image: "./resources/Images/Biodigester.jpg",
     split: { heat: 50, electric: 50 },
     subtypes: {
       farm_scale: {
@@ -90,7 +104,7 @@ const energySourceData = {
   smallTurbine: {
     title: "EAZ Wind Turbine",
     description: "Small wind turbines are ideal for decentralized electricity generation, especially in semi-rural or open areas. They can supplement solar or grid power, and require consistent wind flow for optimal output.",
-    image: "./resources/images/EAZ_Turbine.jpg",
+    image: "./resources/Images/EAZ_Turbine.jpg",
     split: { heat: 15, electric: 85 },
     subtypes: {
       farm: {
@@ -113,7 +127,7 @@ const energySourceData = {
   largeTurbine: {
     title: "Offshore Windmill",
     description: "Large offshore wind turbines capture powerful sea winds to generate high-output renewable electricity. They are expensive to install but offer excellent efficiency and minimal land use.",
-    image: "./resources/images/Offshore_Turbine.jpg",
+    image: "./resources/Images/Offshore_Turbine.jpg",
     split: { heat: 15, electric: 85 },
     subtypes: {
       offshore: {
@@ -135,32 +149,37 @@ const energySourceData = {
   }
 };
 
-
+/**
+ * Predefined energy mix scenarios
+ * Each scenario represents a different distribution of energy sources
+ * Used for quick loading of different energy strategies
+ */
 const scenarios = {
   current: {solar: 25, biogas: 1, sTurb: 10, lTurb: 0},
   scenarioA: {solar: 10, biogas: 3, sTurb: 10, lTurb: 4},
   scenarioB: {solar: 30, biogas: 1, sTurb: 600, lTurb: 0}
 };
 
-// Calculate baseline costs for the current scenario
+// Calculate baseline costs for the current scenario (for cost comparison)
 const baselineSolarCost = scenarios.current.solar * energyCosts.solar;
 const baselineBiogasCost = scenarios.current.biogas * energyCosts.biogas;
 const baselineSTurbCost = scenarios.current.sTurb * energyCosts.sTurb;
 const baselineLTurbCost = scenarios.current.lTurb * energyCosts.lTurb;
 const baselineTotalCost = baselineSolarCost + baselineBiogasCost + baselineSTurbCost + baselineLTurbCost;
 
-// Function to calculate incremental costs above baseline
+//Calculates additional investment costs beyond the current baseline. 
+//Only counts costs for additions beyond the current scenario
 function calculateIncrementalCost(solar, biogas, sTurb, lTurb) {
-  // Calculate total cost of current inputs
+  // Calculate costs only for units exceeding the current baseline
   const totalSolarCost = Math.max(0, (solar - scenarios.current.solar)) * energyCosts.solar;
   const totalBiogasCost = Math.max(0, (biogas - scenarios.current.biogas)) * energyCosts.biogas;
   const totalSTurbCost = Math.max(0, (sTurb - scenarios.current.sTurb)) * energyCosts.sTurb;
   const totalLTurbCost = Math.max(0, (lTurb - scenarios.current.lTurb)) * energyCosts.lTurb;
   
-  // Only count costs for additions beyond baseline
   return totalSolarCost + totalBiogasCost + totalSTurbCost + totalLTurbCost;
 }
 
+//Creates a Sankey diagram showing energy flow from sources to end uses
 function drawSankey(solar, biogas, wind) {
   const data = {
     type: "sankey",
@@ -183,6 +202,7 @@ function drawSankey(solar, biogas, wind) {
   Plotly.react("sankeyChart", [data], { title: "Energy Flow" });
 }
 
+// Load a predefined energy scenario Updates input values and refreshes visualizations
 function loadScenario(scenarioName) {
   const scenario = scenarios[scenarioName];
   
@@ -197,7 +217,11 @@ function loadScenario(scenarioName) {
   }
 }
 
+/* Determines which island map image to display based on energy mix
+ * Returns different map images showing visual impacts of energy sources */
+
 function getTexelImageName(solar, gas, sTurb, lTurb) {
+  // Convert values to boolean flags for threshold comparisons
   const s = solar > 40;
   const g = gas > 6;
   const sT = sTurb > 350;
@@ -241,6 +265,10 @@ function getTexelImageName(solar, gas, sTurb, lTurb) {
   return "Texel_0.png";
 }
 
+/**
+ * Updates the pie chart for the currently selected location
+ * Shows the distribution of energy types in the selected area
+ */
 function updatePieChart() {
   if (!currentHotspot) return;
   
@@ -255,12 +283,14 @@ function updatePieChart() {
     // Combine both turbine types for the wind value
     const wind = sTurb + lTurb;
     
+    // Calculate values based on location's energy split preferences
     const values = [
       solar * (data.energySplit.solar / 100),
       biogas * (data.energySplit.biogas / 100),
       wind * (data.energySplit.wind / 100)
     ];
 
+    // Create pie chart with Plotly
     Plotly.react('pieChart', [{
       type: 'pie',
       values,
@@ -277,19 +307,25 @@ function updatePieChart() {
   }
 }
 
+/**
+ * Main function to update all charts, visualizations and statistics
+ * Called whenever energy input values change
+ */
 function updateChartAndImage() {
+  // Get current input values
   const solar = parseFloat($('#solarInput').val()) || 0;
   const biogas = parseFloat($('#biogasInput').val()) || 0;
   const sTurb = parseFloat($('#sTurbInput').val()) || 0;
   const lTurb = parseFloat($('#lTurbInput').val()) || 0;
   const wind = (sTurb + lTurb)/2;
 
+  // Calculate energy production based on number of units and their yield
   const solarGain = solar * energyGains.solar;
   const biogasGain = biogas * energyGains.biogas;
   const sTurbGain = sTurb * energyGains.sTurb;
   const lTurbGain = lTurb * energyGains.lTurb;
   const totalGenerated = solarGain + biogasGain + sTurbGain + lTurbGain;
-  const totalDemand = 379; // You can make this dynamic later if needed
+  const totalDemand = 379; // Total energy demand in GWh - could be made dynamic
   const percentage = Math.min((totalGenerated / totalDemand) * 100, 100); // cap at 100%
 
   // Calculate incremental budget usage
@@ -297,37 +333,42 @@ function updateChartAndImage() {
   const budgetPercentage = Math.min((incrementalCost / totalBudget) * 100, 100); // cap at 100%
   const budgetRemaining = totalBudget - incrementalCost;
 
-  // Update energy status
+  // Update energy status in UI
   $('#generatedEnergy').text(totalGenerated.toFixed(1));
   $('#demandEnergy').text(totalDemand);
   $('#energyDifference').text((totalGenerated - totalDemand).toFixed(1));
 
-  // Update budget status
+  // Update budget status in UI
   $('#budgetUsed').text(incrementalCost.toFixed(1));
   $('#budgetTotal').text(totalBudget);
   $('#budgetRemaining').text(budgetRemaining.toFixed(1));
 
-  // Update energy bar
+  // Update energy progress bar
   $('#energyBarFill').css('width', `${percentage}%`);
   $('#energyLabelText').text(`Self-production: ${totalGenerated.toFixed(1)} / ${totalDemand} GWh`);
 
-  // Update budget bar
+  // Update budget progress bar
   $('#budgetBarFill').css('width', `${budgetPercentage}%`);
   $('#budgetLabelText').text(`Investment: ${incrementalCost.toFixed(1)} / ${totalBudget} mil.€`);
 
+  // Update visualizations
   drawSankey(solar, biogas, wind);
   const imageName = getTexelImageName(solar, biogas, sTurb, lTurb);
   $('#texelMap').attr('src', imageName);
 
+  // Update location-specific visualization if applicable
   updatePieChart();
 }
 
+// Displays information panel for a selected location or energy source
 function showInfo(type) {
+  // Check if it's an energy source rather than a location
   if (type.startsWith('source_')) {
     showEnergySourceInfo(type.replace('source_', ''));
     return;
   }
 
+  // Toggle off if clicking the same hotspot
   if (currentHotspot === type) {
     // Hide the info panel and reset state if clicking the same hotspot
     $('.info-panel').removeClass('show');
@@ -335,6 +376,7 @@ function showInfo(type) {
     return;
   }
 
+  // Set current hotspot and retrieve its data
   currentHotspot = type;
   const data = hotspotData[type];
 
@@ -363,18 +405,25 @@ function showInfo(type) {
   }, 50);
 }
 
-// Improved function to position hotspots correctly
+/**
+ * Positions hotspot markers on the map according to their coordinates
+ * Ensures hotspots are properly positioned relative to the map size
+ */
 function positionHotspots() {
   const mapContainer = $('#interactiveMap');
   const mapImage = $('#texelMap');
   
-  // Wait for the image to load
+  // Wait for the image to load before positioning
   if (mapImage[0].complete) {
     updateHotspotPositions();
   } else {
     mapImage.on('load', updateHotspotPositions);
   }
   
+  /**
+   * Updates hotspot positions based on current map dimensions
+   * Called when map loads or is resized
+   */
   function updateHotspotPositions() {
     // Get the dimensions of the map image
     const mapWidth = mapImage.width();
@@ -410,7 +459,10 @@ function positionHotspots() {
   }
 }
 
-// Function to resize hotspots based on map size
+/**
+ * Resizes hotspot markers based on current map size
+ * Ensures hotspots scale appropriately with responsive design
+ */
 function resizeHotspots() {
   const mapWidth = $('#texelMap').width();
   const baseSize = Math.max(20, mapWidth * 0.04); // 4% of map width, minimum 20px
@@ -420,26 +472,31 @@ function resizeHotspots() {
     height: `${baseSize}px`
   });
   
-  // Reposition after resizing
+  // Reposition after resizing to maintain proper placement
   positionHotspots();
 }
 
+/**
+ * jQuery document ready handler - initializes the application
+ */
 $(document).ready(() => {
   // Initially hide hotspots until properly positioned
   $('.hotspot').css('opacity', 0);
   
+  // Initialize UI state
   updateChartAndImage();
   resizeHotspots(); // This will also call positionHotspots
   
+  // Load default scenario
   loadScenario('current');
   
-  // Eevent listener for scenario dropdown
+  // Event listener for scenario dropdown
   $('#scenarioSelect').on('change', function() {
     const selectedScenario = $(this).val();
     loadScenario(selectedScenario);
   });
 
-  // Change Event listeners
+  // Event listeners for energy input sliders/fields
   $('#solarInput, #biogasInput, #sTurbInput, #lTurbInput').on('input change', updateChartAndImage);
   
   // Event listener for info buttons
@@ -459,7 +516,9 @@ $(document).ready(() => {
   });
 });
 
+// Shows detailed information about a specific energy source
 function showEnergySourceInfo(sourceType) {
+  // Toggle off if clicking the same source
   if (currentHotspot === `source_${sourceType}`) {
     // Hide the info panel and reset state if clicking the same source
     $('.info-panel').removeClass('show');
@@ -467,10 +526,11 @@ function showEnergySourceInfo(sourceType) {
     return;
   }
 
+  // Set current hotspot and get its data
   currentHotspot = `source_${sourceType}`;
   const data = energySourceData[sourceType];
 
-  // Create HTML for subtypes - now they're different for each energy source
+  // Create HTML for subtypes - each energy source has different implementation types
   let subtypesHTML = '';
   for (const [subtypeKey, subtypeData] of Object.entries(data.subtypes)) {
     const formattedName = subtypeKey.replace(/_/g, ' ');
@@ -528,7 +588,7 @@ function showEnergySourceInfo(sourceType) {
   }, 50);
 }
 
-// Function to draw pie chart for energy source split
+// Draws a pie chart showing energy output split between heat and electricity
 function drawEnergySplitPieChart(splitData) {
   Plotly.react('energySplitChart', [{
     type: 'pie',
