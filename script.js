@@ -262,7 +262,7 @@ function getTexelImageName(solar, gas, sTurb, lTurb) {
   if (s && g && sT && lT) return "./resources/images/Texel_All.png";
 
   // Back-up
-  return "Texel_0.png";
+  return "./resource/images/Texel_0.png";
 }
 
 /**
