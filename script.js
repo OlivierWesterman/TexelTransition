@@ -228,38 +228,38 @@ function getTexelImageName(solar, gas, sTurb, lTurb) {
   const lT = lTurb > 5;
 
   // None
-  if (!s && !g && !sT && !lT) return "./resources/Images/Texel_0.png"
+  if (!s && !g && !sT && !lT) return "./resources/images/Texel_0.png"
 
   //Singles
-  if (s && !g && !sT && !lT) return "./resources/Images/Texel_Solar.png"
-  if (!s && g && !sT && !lT) return "./resources/Images/Texel_Gas.png"
-  if (!s && !g && sT && !lT) return "./resources/Images/Texel_EAZ.png"
-  if (!s && !g && !sT && lT) return "./resources/Images/Texel_OffShore.png"
+  if (s && !g && !sT && !lT) return "./resources/images/Texel_Solar.png"
+  if (!s && g && !sT && !lT) return "./resources/images/Texel_Gas.png"
+  if (!s && !g && sT && !lT) return "./resources/images/Texel_EAZ.png"
+  if (!s && !g && !sT && lT) return "./resources/images/Texel_OffShore.png"
 
   //Doubles
     // Solar
-  if (s && g && !sT && !lT) return "./resources/Images/Texel_SolarGas.png"
-  if (s && !g && sT && !lT) return "./resources/Images/Texel_SolarEAZ.png"
-  if (s && !g && !sT && lT) return "./resources/Images/Texel_SolarOffShore.png"
+  if (s && g && !sT && !lT) return "./resources/images/Texel_SolarGas.png"
+  if (s && !g && sT && !lT) return "./resources/images/Texel_SolarEAZ.png"
+  if (s && !g && !sT && lT) return "./resources/images/Texel_SolarOffShore.png"
 
     // Gas
-  if (!s && g && sT && !lT) return "./resources/Images/Texel_EAZGas.png"
-  if (!s && g && !sT && lT) return "./resources/Images/Texel_OffShoreGas.png"
+  if (!s && g && sT && !lT) return "./resources/images/Texel_EAZGas.png"
+  if (!s && g && !sT && lT) return "./resources/images/Texel_OffShoreGas.png"
 
     // EAZ
-  if (!s && !g && sT && lT) return "./resources/Images/Texel_Wind.png"
+  if (!s && !g && sT && lT) return "./resources/images/Texel_Wind.png"
 
   //Triples
     // EAZ and Offshore
-  if (s && !g && sT && lT) return "./resources/Images/Texel_SolarWind.png"
-  if (!s && g && sT && lT) return "./resources/Images/Texel_WindGas.png"
+  if (s && !g && sT && lT) return "./resources/images/Texel_SolarWind.png"
+  if (!s && g && sT && lT) return "./resources/images/Texel_WindGas.png"
 
     // Solar & Gas
-  if (s && g && sT && !lT) return "./resources/Images/Texel_SolarEAZGas.png"
-  if (s && g && !sT && lT) return "./resources/Images/Texel_SolarOffShoreGas.png"
+  if (s && g && sT && !lT) return "./resources/images/Texel_SolarEAZGas.png"
+  if (s && g && !sT && lT) return "./resources/images/Texel_SolarOffShoreGas.png"
 
   // All
-  if (s && g && sT && lT) return "./resources/Images/Texel_All.png";
+  if (s && g && sT && lT) return "./resources/images/Texel_All.png";
 
   // Back-up
   return "Texel_0.png";
