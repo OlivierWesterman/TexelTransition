@@ -6,7 +6,8 @@ const energyCosts = {
   solar: 1.1,     // Cost per solar unit (€M)
   biogas: 3.5,    // Cost per biogas plant (€M)
   sTurb: .05,     // Cost per small turbine (€M)
-  lTurb: 3        // Cost per large offshore turbine (€M)
+  lTurb: 3,       // Cost per large offshore turbine (€M)
+  tidal: 2.5      // Cost per tidal generator (€M)
 };
 
 // Annual energy production per unit (in GWh)
@@ -14,7 +15,8 @@ const energyGains = {
   solar: 2,       // Output per solar unit (GWh)
   biogas: 42,     // Output per biogas plant (GWh)
   sTurb: 0.175,   // Output per small turbine (GWh)
-  lTurb: 30       // Output per large offshore turbine (GWh)
+  lTurb: 30,      // Output per large offshore turbine (GWh)
+  tidal: 20       // Output per tidal generator (GWh)
 };
  
 // Define available investment budget (in millions of euros)
@@ -33,19 +35,19 @@ const hotspotData = {
     description: "Oosterend has a lot of lorem ipsum potential and lorem ipsum",
     image: "./resources/images/Oosterend.jpg",
     position: { top: '50%', left: '72.8%' },
-    energySplit: { wind: 50, solar: 18, biogas: 32 }
+    energySplit: { wind: 40, solar: 15, biogas: 25, tidal: 20 }
   },
   Den_Burg: {
     description: "The most populous area of the island and hub of commerce.",
     image: "./resources/images/DenBurg.jpg",
     position: { top: '65%', left: '46%' },
-    energySplit: { wind: 32, solar: 24, biogas: 44 }
+    energySplit: { wind: 25, solar: 20, biogas: 40, tidal: 15 }
   },
   Oudeschild: {
     description: "A fishing village, relying on fossil fuels to power their boats.",
     image: "./resources/images/Oudeschild.jpg",
     position: { top: '73%', left: '65%' },
-    energySplit: { wind: 18, solar: 48, biogas: 24 }
+    energySplit: { wind: 15, solar: 30, biogas: 20, tidal: 35 }
   }
 };
 
@@ -146,6 +148,29 @@ const energySourceData = {
         environmental_impact: 'C'
       }
     }
+  },
+  tidalGen: {
+    title: "Tidal Generator",
+    description: "Tidal generators harness the kinetic energy of tidal flows to produce clean, predictable electricity. These underwater turbines are installed in coastal areas with strong tidal currents and provide reliable renewable energy regardless of weather conditions.",
+    image: "./resources/Images/Tidal_Generator.jpg",
+    split: { heat: 5, electric: 95 },
+    subtypes: {
+      tidal_barrage: {
+        keywords: "Dam-like structure, high output, large installation",
+        efficiency: 'A',
+        environmental_impact: 'B'
+      },
+      tidal_stream: {
+        keywords: "Underwater turbines, minimal visual impact",
+        efficiency: 'B',
+        environmental_impact: 'A'
+      },
+      dynamic_tidal: {
+        keywords: "Floating platforms, adaptable to water levels",
+        efficiency: 'B',
+        environmental_impact: 'A'
+      }
+    }
   }
 };
 
@@ -155,9 +180,9 @@ const energySourceData = {
  * Used for quick loading of different energy strategies
  */
 const scenarios = {
-  current: {solar: 25, biogas: 1, sTurb: 10, lTurb: 0},
-  scenarioA: {solar: 10, biogas: 3, sTurb: 10, lTurb: 4},
-  scenarioB: {solar: 30, biogas: 1, sTurb: 600, lTurb: 0}
+  current: {solar: 25, biogas: 1, sTurb: 10, lTurb: 0, tidal: 0},
+  scenarioA: {solar: 10, biogas: 3, sTurb: 10, lTurb: 4, tidal: 2},
+  scenarioB: {solar: 30, biogas: 1, sTurb: 600, lTurb: 0, tidal: 5}
 };
 
 // Calculate baseline costs for the current scenario (for cost comparison)
@@ -165,22 +190,24 @@ const baselineSolarCost = scenarios.current.solar * energyCosts.solar;
 const baselineBiogasCost = scenarios.current.biogas * energyCosts.biogas;
 const baselineSTurbCost = scenarios.current.sTurb * energyCosts.sTurb;
 const baselineLTurbCost = scenarios.current.lTurb * energyCosts.lTurb;
-const baselineTotalCost = baselineSolarCost + baselineBiogasCost + baselineSTurbCost + baselineLTurbCost;
+const baselineTidalCost = scenarios.current.tidal * energyCosts.tidal;
+const baselineTotalCost = baselineSolarCost + baselineBiogasCost + baselineSTurbCost + baselineLTurbCost + baselineTidalCost;
 
 //Calculates additional investment costs beyond the current baseline. 
 //Only counts costs for additions beyond the current scenario
-function calculateIncrementalCost(solar, biogas, sTurb, lTurb) {
+function calculateIncrementalCost(solar, biogas, sTurb, lTurb, tidal) {
   // Calculate costs only for units exceeding the current baseline
   const totalSolarCost = Math.max(0, (solar - scenarios.current.solar)) * energyCosts.solar;
   const totalBiogasCost = Math.max(0, (biogas - scenarios.current.biogas)) * energyCosts.biogas;
   const totalSTurbCost = Math.max(0, (sTurb - scenarios.current.sTurb)) * energyCosts.sTurb;
   const totalLTurbCost = Math.max(0, (lTurb - scenarios.current.lTurb)) * energyCosts.lTurb;
+  const totalTidalCost = Math.max(0, (tidal - scenarios.current.tidal)) * energyCosts.tidal;
   
-  return totalSolarCost + totalBiogasCost + totalSTurbCost + totalLTurbCost;
+  return totalSolarCost + totalBiogasCost + totalSTurbCost + totalLTurbCost + totalTidalCost;
 }
 
 //Creates a Sankey diagram showing energy flow from sources to end uses
-function drawSankey(solar, biogas, wind) {
+function drawSankey(solar, biogas, wind, tidal) {
   const data = {
     type: "sankey",
     orientation: "h",
@@ -188,14 +215,14 @@ function drawSankey(solar, biogas, wind) {
       pad: 15,
       thickness: 20,
       line: { color: "black", width: 0.5 },
-      label: ["Solar", "Biogas", "Wind", "Electric", "Heat"],
-      color: ["#f39c12", "#27ae60", "#3498db", "yellow", "coral"]
+      label: ["Solar", "Biogas", "Wind", "Tidal", "Electric", "Heat"],
+      color: ["#f39c12", "#27ae60", "#3498db", "#8e44ad", "yellow", "coral"]
     },
     link: {
-      source: [0, 0, 1, 1, 2, 2],
-      target: [3, 4, 3, 4, 3, 4],
-      value: [solar * 0.8, solar * 0.2, biogas * 0.5, biogas * 0.5, wind * 0.85 , wind * 0.15],
-      color: ["#f39c12", "#f39c12", "#27ae60", "#27ae60", "#3498db", "#3498db"]
+      source: [0, 0, 1, 1, 2, 2, 3, 3],
+      target: [4, 5, 4, 5, 4, 5, 4, 5],
+      value: [solar * 0.8, solar * 0.2, biogas * 0.5, biogas * 0.5, wind * 0.85, wind * 0.15, tidal * 0.95, tidal * 0.05],
+      color: ["#f39c12", "#f39c12", "#27ae60", "#27ae60", "#3498db", "#3498db", "#8e44ad", "#8e44ad"]
     }
   };
 
@@ -211,6 +238,7 @@ function loadScenario(scenarioName) {
     $('#biogasInput').val(scenario.biogas);
     $('#sTurbInput').val(scenario.sTurb);
     $('#lTurbInput').val(scenario.lTurb);
+    $('#tidalInput').val(scenario.tidal);
     
     // Update the charts and visuals
     updateChartAndImage();
@@ -220,46 +248,70 @@ function loadScenario(scenarioName) {
 /* Determines which island map image to display based on energy mix
  * Returns different map images showing visual impacts of energy sources */
 
-function getTexelImageName(solar, gas, sTurb, lTurb) {
+function getTexelImageName(solar, gas, sTurb, lTurb, tidal) {
   // Convert values to boolean flags for threshold comparisons
   const s = solar > 40;
   const g = gas > 6;
   const sT = sTurb > 350;
   const lT = lTurb > 5;
+  const t = tidal > 8;
 
+  // ---- Base cases ----
   // None
-  if (!s && !g && !sT && !lT) return "./resources/images/Texel_0.png"
+  if (!s && !g && !sT && !lT && !t) return "./resources/images/Texel_0.png"
 
-  //Singles
-  if (s && !g && !sT && !lT) return "./resources/images/Texel_Solar.png"
-  if (!s && g && !sT && !lT) return "./resources/images/Texel_Gas.png"
-  if (!s && !g && sT && !lT) return "./resources/images/Texel_EAZ.png"
-  if (!s && !g && !sT && lT) return "./resources/images/Texel_OffShore.png"
+  // ---- Single sources ----
+  if (s && !g && !sT && !lT && !t) return "./resources/images/Texel_Solar.png"
+  if (!s && g && !sT && !lT && !t) return "./resources/images/Texel_Gas.png"
+  if (!s && !g && sT && !lT && !t) return "./resources/images/Texel_EAZ.png"
+  if (!s && !g && !sT && lT && !t) return "./resources/images/Texel_OffShore.png"
+  if (!s && !g && !sT && !lT && t) return "./resources/images/Texel_Tidal.png"
 
-  //Doubles
-    // Solar
-  if (s && g && !sT && !lT) return "./resources/images/Texel_SolarGas.png"
-  if (s && !g && sT && !lT) return "./resources/images/Texel_SolarEAZ.png"
-  if (s && !g && !sT && lT) return "./resources/images/Texel_SolarOffShore.png"
+  // ---- Doubles including Tidal ----
+  if (s && !g && !sT && !lT && t) return "./resources/images/Texel_SolarTidal.png"
+  if (!s && g && !sT && !lT && t) return "./resources/images/Texel_GasTidal.png"
+  if (!s && !g && sT && !lT && t) return "./resources/images/Texel_EAZTidal.png"
+  if (!s && !g && !sT && lT && t) return "./resources/images/Texel_OffShoreTidal.png"
 
-    // Gas
-  if (!s && g && sT && !lT) return "./resources/images/Texel_EAZGas.png"
-  if (!s && g && !sT && lT) return "./resources/images/Texel_OffShoreGas.png"
+  // ---- Other Doubles ----
+  // Solar
+  if (s && g && !sT && !lT && !t) return "./resources/images/Texel_SolarGas.png"
+  if (s && !g && sT && !lT && !t) return "./resources/images/Texel_SolarEAZ.png"
+  if (s && !g && !sT && lT && !t) return "./resources/images/Texel_SolarOffShore.png"
 
-    // EAZ
-  if (!s && !g && sT && lT) return "./resources/images/Texel_Wind.png"
+  // Gas
+  if (!s && g && sT && !lT && !t) return "./resources/images/Texel_EAZGas.png"
+  if (!s && g && !sT && lT && !t) return "./resources/images/Texel_OffShoreGas.png"
 
-  //Triples
-    // EAZ and Offshore
-  if (s && !g && sT && lT) return "./resources/images/Texel_SolarWind.png"
-  if (!s && g && sT && lT) return "./resources/images/Texel_WindGas.png"
+  // EAZ
+  if (!s && !g && sT && lT && !t) return "./resources/images/Texel_Wind.png"
 
-    // Solar & Gas
-  if (s && g && sT && !lT) return "./resources/images/Texel_SolarEAZGas.png"
-  if (s && g && !sT && lT) return "./resources/images/Texel_SolarOffShoreGas.png"
+  // ---- Triples involving Tidal ----
+  if (s && g && !sT && !lT && t) return "./resources/images/Texel_SolarGasTidal.png"
+  if (s && !g && sT && !lT && t) return "./resources/images/Texel_SolarEAZTidal.png"
+  if (s && !g && !sT && lT && t) return "./resources/images/Texel_SolarOffShoreTidal.png"
+  if (!s && g && sT && !lT && t) return "./resources/images/Texel_EAZGasTidal.png"
+  if (!s && g && !sT && lT && t) return "./resources/images/Texel_OffShoreGasTidal.png"
+  if (!s && !g && sT && lT && t) return "./resources/images/Texel_WindTidal.png"
 
-  // All
-  if (s && g && sT && lT) return "./resources/images/Texel_All.png";
+  // ---- Other Triples ----
+  // EAZ and Offshore
+  if (s && !g && sT && lT && !t) return "./resources/images/Texel_SolarWind.png"
+  if (!s && g && sT && lT && !t) return "./resources/images/Texel_WindGas.png"
+
+  // Solar & Gas
+  if (s && g && sT && !lT && !t) return "./resources/images/Texel_SolarEAZGas.png"
+  if (s && g && !sT && lT && !t) return "./resources/images/Texel_SolarOffShoreGas.png"
+
+  // ---- Quads (4 sources) ----
+  if (s && g && sT && !lT && t) return "./resources/images/Texel_SolarEAZGasTidal.png"
+  if (s && g && !sT && lT && t) return "./resources/images/Texel_SolarOffShoreGasTidal.png"
+  if (s && !g && sT && lT && t) return "./resources/images/Texel_SolarWindTidal.png"
+  if (!s && g && sT && lT && t) return "./resources/images/Texel_WindGasTidal.png"
+  if (s && g && sT && lT && !t) return "./resources/images/Texel_All_NoTidal.png"
+
+  // ---- All five sources ----
+  if (s && g && sT && lT && t) return "./resources/images/Texel_All.png";
 
   // Back-up
   return "./resource/images/Texel_0.png";
@@ -279,6 +331,7 @@ function updatePieChart() {
     const biogas = parseFloat($('#biogasInput').val()) || 0;
     const sTurb = parseFloat($('#sTurbInput').val()) || 0;
     const lTurb = parseFloat($('#lTurbInput').val()) || 0;
+    const tidal = parseFloat($('#tidalInput').val()) || 0;
     
     // Combine both turbine types for the wind value
     const wind = sTurb + lTurb;
@@ -287,16 +340,17 @@ function updatePieChart() {
     const values = [
       solar * (data.energySplit.solar / 100),
       biogas * (data.energySplit.biogas / 100),
-      wind * (data.energySplit.wind / 100)
+      wind * (data.energySplit.wind / 100),
+      tidal * (data.energySplit.tidal / 100)
     ];
 
     // Create pie chart with Plotly
     Plotly.react('pieChart', [{
       type: 'pie',
       values,
-      labels: ['Solar', 'Biogas', 'Wind'],
+      labels: ['Solar', 'Biogas', 'Wind', 'Tidal'],
       marker: {
-        colors: ['#f39c12', '#27ae60', '#3498db']
+        colors: ['#f39c12', '#27ae60', '#3498db', '#8e44ad']
       },
       textinfo: 'label+percent',
       hoverinfo: 'label+value+percent'
@@ -317,6 +371,7 @@ function updateChartAndImage() {
   const biogas = parseFloat($('#biogasInput').val()) || 0;
   const sTurb = parseFloat($('#sTurbInput').val()) || 0;
   const lTurb = parseFloat($('#lTurbInput').val()) || 0;
+  const tidal = parseFloat($('#tidalInput').val()) || 0;
   const wind = (sTurb + lTurb)/2;
 
   // Calculate energy production based on number of units and their yield
@@ -324,12 +379,13 @@ function updateChartAndImage() {
   const biogasGain = biogas * energyGains.biogas;
   const sTurbGain = sTurb * energyGains.sTurb;
   const lTurbGain = lTurb * energyGains.lTurb;
-  const totalGenerated = solarGain + biogasGain + sTurbGain + lTurbGain;
+  const tidalGain = tidal * energyGains.tidal;
+  const totalGenerated = solarGain + biogasGain + sTurbGain + lTurbGain + tidalGain;
   const totalDemand = 379; // Total energy demand in GWh - could be made dynamic
   const percentage = Math.min((totalGenerated / totalDemand) * 100, 100); // cap at 100%
 
   // Calculate incremental budget usage
-  const incrementalCost = calculateIncrementalCost(solar, biogas, sTurb, lTurb);
+  const incrementalCost = calculateIncrementalCost(solar, biogas, sTurb, lTurb, tidal);
   const budgetPercentage = Math.min((incrementalCost / totalBudget) * 100, 100); // cap at 100%
   const budgetRemaining = totalBudget - incrementalCost;
 
@@ -352,8 +408,8 @@ function updateChartAndImage() {
   $('#budgetLabelText').text(`Investment: ${incrementalCost.toFixed(1)} / ${totalBudget} mil.€`);
 
   // Update visualizations
-  drawSankey(solar, biogas, wind);
-  const imageName = getTexelImageName(solar, biogas, sTurb, lTurb);
+  drawSankey(solar, biogas, wind, tidal);
+  const imageName = getTexelImageName(solar, biogas, sTurb, lTurb, tidal);
   $('#texelMap').attr('src', imageName);
 
   // Update location-specific visualization if applicable
@@ -390,6 +446,7 @@ function showInfo(type) {
       <li>Wind: ${data.energySplit.wind}%</li>
       <li>Solar: ${data.energySplit.solar}%</li>
       <li>Biogas: ${data.energySplit.biogas}%</li>
+      <li>Tidal: ${data.energySplit.tidal}%</li>
     </ul>
     <div id="pieChart"></div>
   `);
@@ -497,7 +554,7 @@ $(document).ready(() => {
   });
 
   // Event listeners for energy input sliders/fields
-  $('#solarInput, #biogasInput, #sTurbInput, #lTurbInput').on('input change', updateChartAndImage);
+  $('#solarInput, #biogasInput, #sTurbInput, #lTurbInput, #tidalInput').on('input change', updateChartAndImage);
   
   // Event listener for info buttons
   $('.info-btn').on('click', function(e) {
