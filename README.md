@@ -1,20 +1,119 @@
-# TexelTransition
-A Website that visualises data about green energy transition on the Dutch island of Texel.
+# Texel Energy Transition Simulator
 
+![Texel Energy Transition Simulator](https://via.placeholder.com/800x400?text=Texel+Energy+Transition+Simulator)
 
-# How to use
-To host the website locally, follow these steps:
-1. Install Visual Studio Code (see this guide: [Visual Studio Code](https://code.visualstudio.com/docs/setup/setup-overview) )
-2. Install Git (see this guide: [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git))
-3. Open a Powershell as admin in the folder you wish to house the website files locally on your pc (SHIFT + Right-click in Explorer an click Open Powershell here.)
-4. In the terminal type or copy paste this code: ```git clone https://github.com/OlivierWesterman/TexelTransition.git``` and hit enter
-5. The repo folder should now exist locally, right-click it and "open with visual studio code"
-6. In the top bar, click the ... to navigate to Terminal and click "New Terminal"
-7. Install Python (see this guide: [Python in VSCode](https://code.visualstudio.com/docs/python/python-tutorial))
-8. A cursor will appear in a new window where you just enter these lines of code, one by one:
--  ```pip install matplotlib```,
--  ```pip install numpy```,
--  ```pip install pandas```,
--  ```pip install streamlit```
-10. Finally, just enter this code in that same terminal ```python -m streamlit run app.py```, and the website will open.
-11. When you are done you need to shut down the website by going back to the terminal and pressing CTRL+C or hitting the trashcan icon above to delete the terminal.
+## 📊 Overview
+
+The Texel Energy Transition Simulator is an interactive web application that allows users to explore different renewable energy scenarios for Texel, an island in the Netherlands. This tool helps visualize the impact of various energy sources on the island's self-sustainability, budget constraints, and visual landscape.
+
+## ✨ Features
+
+- **Interactive Energy Planning**: Adjust the implementation of different renewable energy sources (solar, biogas, wind turbines, tidal generators)
+- **Real-time Feedback**: Instantly see the impact on energy production, budget, and the island's appearance
+- **Location-specific Analysis**: Explore different settlements on Texel and their unique energy needs
+- **Detailed Energy Information**: Learn about various renewable energy technologies and their characteristics
+- **Predefined Scenarios**: Quick-load prepared energy mix scenarios for comparison
+- **Data Visualization**: View energy production and flow through dynamic charts
+- **Responsive Design**: Works on desktop, tablet, and mobile devices
+
+## 🖥️ Technologies Used
+
+- **HTML5/CSS3**: For structure and styling
+- **SCSS**: For more maintainable and organized styling
+- **JavaScript/jQuery**: For interactivity and DOM manipulation
+- **Plotly.js**: For advanced data visualization (Sankey diagrams, pie charts)
+
+## 🚀 How to Use
+
+1. **Adjust Energy Sources**: Use the input fields on the left panel to set quantities for each energy source
+2. **Select Scenario**: Choose from predefined scenarios using the dropdown menu
+3. **View Impact**: See real-time updates to energy production, budget usage, and visual changes on the map
+4. **Explore Locations**: Click on hotspots on the map to view location-specific information
+5. **Learn About Technologies**: Click the "i" information buttons to learn about each energy source
+
+## 📖 Energy Sources
+
+The simulator includes the following renewable energy sources:
+
+- **Solar Panels**: Rooftop, façade, and floating installations
+- **Biogas Digesters**: Farm-scale, industrial, and community options
+- **Small Wind Turbines**: Farm-based, residential, and off-grid options
+- **Large Wind Turbines**: Offshore, nearshore, and large onshore options
+- **Tidal Generators**: Tidal barrage, tidal stream, and dynamic tidal options
+
+## 📊 Data Visualization
+
+- **Energy Progress Bar**: Shows current energy production relative to total island demand
+- **Budget Progress Bar**: Shows current spending relative to total available budget
+- **Sankey Diagram**: Visualizes energy flow from sources to end uses (electricity and heat)
+- **Location-specific Pie Charts**: Shows energy distribution preferences for each settlement
+
+## 🏙️ Map Visualization
+
+The interactive map changes based on your energy choices, showing the visual impact of energy installations on the island's landscape. Different combinations of energy sources produce unique visual representations.
+
+## 🧩 Project Structure
+
+```
+texel-energy-transition/
+├── index.html           # Main HTML structure
+├── style.css            # Compiled CSS styles
+├── scss/               # SCSS source files (optional)
+│   └── style.scss      # Main SCSS file
+├── script.js           # JavaScript functionality
+└── resources/          # Images and other resources
+    └── images/         # Map images and energy source illustrations
+```
+
+## 🔧 Installation & Setup
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/texel-energy-transition.git
+   ```
+
+2. Navigate to the project directory:
+   ```bash
+   cd texel-energy-transition
+   ```
+
+3. If using SCSS (optional):
+   ```bash
+   # Install Sass if you don't have it
+   npm install -g sass
+   
+   # Compile SCSS to CSS
+   sass scss/style.scss style.css
+   ```
+
+4. Open `index.html` in your browser or set up a local server:
+   ```bash
+   # Using Python's built-in server for example
+   python -m http.server
+   ```
+
+## 🔍 Technical Details
+
+### Energy Calculations
+
+- **Energy Production**: Each energy source produces a specific amount of GWh per unit
+- **Heat vs. Electricity**: Energy sources produce different ratios of heat and electricity
+- **Budget Calculation**: Investment costs are calculated incrementally from the baseline scenario
+
+### Map Visualization Logic
+
+The map visualization uses a Boolean logic system to determine which image to display based on threshold values for each energy source. This creates a comprehensive visual representation of the energy infrastructure on the island.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 👥 Acknowledgments
+
+- Data on energy costs and production based on industry averages
+- Island geography and settlement information based on Texel, Netherlands
+- Inspired by real-world energy transition challenges faced by islands
