@@ -181,8 +181,8 @@ const energySourceData = {
  */
 const scenarios = {
   current: {solar: 25, biogas: 1, sTurb: 10, lTurb: 0, tidal: 0},
-  scenarioA: {solar: 10, biogas: 3, sTurb: 10, lTurb: 4, tidal: 2},
-  scenarioB: {solar: 30, biogas: 1, sTurb: 600, lTurb: 0, tidal: 5}
+  scenarioA: {solar: 10, biogas: 3, sTurb: 10, lTurb: 4, tidal: 0},
+  scenarioB: {solar: 30, biogas: 1, sTurb: 600, lTurb: 0, tidal: 0}
 };
 
 // Calculate baseline costs for the current scenario (for cost comparison)
