@@ -1,0 +1,8 @@
+services:
+  texel-transition:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - ./resources:/usr/share/nginx/html/resources
+    restart: unless-stopped

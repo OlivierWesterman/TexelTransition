@@ -22,6 +22,8 @@ The Texel Energy Transition Simulator is an interactive web application that all
 - **SCSS**: For more maintainable and organized styling
 - **JavaScript/jQuery**: For interactivity and DOM manipulation
 - **Plotly.js**: For advanced data visualization (Sankey diagrams, pie charts)
+- **Docker**: For containerization and easy deployment
+- **Nginx**: As the web server
 
 ## 🚀 How to Use
 
@@ -61,11 +63,39 @@ texel-energy-transition/
 ├── scss/               # SCSS source files (optional)
 │   └── style.scss      # Main SCSS file
 ├── script.js           # JavaScript functionality
-└── resources/          # Images and other resources
-    └── images/         # Map images and energy source illustrations
+├── resources/          # Images and other resources
+│   └── images/         # Map images and energy source illustrations
+├── Dockerfile          # Docker build configuration
+├── docker-compose.yml  # Docker Compose configuration
+└── nginx.conf          # Nginx web server configuration
 ```
 
-## 🔧 Installation & Setup
+## 🐳 Docker Deployment
+
+The application can be easily deployed using Docker:
+
+1. **Using Docker Compose (Recommended)**:
+   ```bash
+   # Build and start the container
+   docker-compose up -d
+   
+   # Access the application at http://localhost:8080
+   ```
+
+2. **Manually with Docker**:
+   ```bash
+   # Build the Docker image
+   docker build -t texel-energy-transition .
+   
+   # Run the container
+   docker run -p 8080:80 -v ./resources:/usr/share/nginx/html/resources texel-energy-transition
+   ```
+
+3. **Configuration**:
+   - The application runs on port 8080 by default (configurable in docker-compose.yml)
+   - Resources directory is mounted as a volume for easy updates
+
+## 🔧 Installation & Setup (Non-Docker)
 
 1. Clone the repository:
    ```bash
